@@ -31,7 +31,7 @@
 
         .content {
             position: absolute;
-            top: 10%;
+            top: 5%; /* Ajustado para subir mais o conteúdo */
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
@@ -48,35 +48,35 @@
         }
 
         h1 {
-            font-size: 1.8rem;
+            font-size: 1.7rem; /* Tamanho ajustado */
             margin-bottom: 15px;
         }
 
         .counter {
-            font-size: 1rem;
+            font-size: 0.9rem; /* Diminui o texto dentro das caixas */
             margin: 10px;
             background: rgba(255, 255, 255, 0.8);
-            padding: 15px;
+            padding: 12px; /* Menos padding para diminuir o tamanho das caixas */
             border-radius: 10px;
             display: inline-block;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center;
             width: 100%;
-            max-width: 280px; /* Caixa mais compacta */
+            max-width: 250px; /* Caixas 10% menores */
         }
 
         .counter h2 {
-            font-size: 1.3rem;
+            font-size: 1.2rem; /* Tamanho do texto na caixa ajustado */
             margin-bottom: 10px;
         }
 
         .counter p {
             margin: 5px 0;
-            font-size: 0.9rem;
+            font-size: 0.8rem; /* Ajusta o tamanho do texto */
         }
 
         .counter .date {
-            font-size: 0.8rem;
+            font-size: 0.7rem; /* Fonte da data menor */
             margin-bottom: 10px;
             color: #555;
         }
@@ -84,7 +84,7 @@
         .music-player {
             margin-top: 15px; /* Distância entre o iframe e as caixas */
             width: 100%;
-            max-width: 280px; /* Ajustar a largura do iframe do Deezer */
+            max-width: 250px; /* Ajustado para o mesmo tamanho das caixas */
             text-align: center;
             display: flex;
             justify-content: center;
@@ -112,7 +112,7 @@
 
         @media (max-width: 600px) {
             .content {
-                top: 15%; /* Título mais para baixo */
+                top: 8%; /* Subir ainda mais no mobile */
                 font-size: 0.9rem;
             }
 
@@ -123,21 +123,21 @@
 
             .counter {
                 font-size: 0.9rem;
-                max-width: 90%; /* Menor no mobile */
+                max-width: 85%; /* Ajuste para o mobile */
                 margin: 5px;
             }
 
             .counter h2 {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
 
             .counter p {
-                font-size: 0.9rem;
+                font-size: 0.8rem;
             }
 
             .music-player {
-                max-width: 90%; /* Ajustar largura do iframe */
-                margin-top: 15px; /* Ajustar a distância do iframe para ser a mesma das caixas */
+                max-width: 85%; /* Ajuste do iframe para o mobile */
+                margin-top: 15px;
             }
 
             .music-player iframe {
