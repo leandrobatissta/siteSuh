@@ -31,7 +31,7 @@
 
         .content {
             position: absolute;
-            top: 5%; /* Ajustado para subir mais o conteúdo */
+            top: 0%; /* Subi ainda mais o conteúdo */
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
@@ -48,43 +48,48 @@
         }
 
         h1 {
-            font-size: 1.7rem; /* Tamanho ajustado */
-            margin-bottom: 15px;
+            font-size: 1.6rem;
+            margin-bottom: 5px; /* Diminuí o espaço entre o título e o nome */
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin-top: 0; /* Removi a margem superior para reduzir o espaço entre as linhas do título */
         }
 
         .counter {
-            font-size: 0.9rem; /* Diminui o texto dentro das caixas */
+            font-size: 0.9rem;
             margin: 10px;
             background: rgba(255, 255, 255, 0.8);
-            padding: 12px; /* Menos padding para diminuir o tamanho das caixas */
+            padding: 12px;
             border-radius: 10px;
             display: inline-block;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center;
             width: 100%;
-            max-width: 250px; /* Caixas 10% menores */
+            max-width: 250px;
         }
 
         .counter h2 {
-            font-size: 1.2rem; /* Tamanho do texto na caixa ajustado */
+            font-size: 1.2rem;
             margin-bottom: 10px;
         }
 
         .counter p {
             margin: 5px 0;
-            font-size: 0.8rem; /* Ajusta o tamanho do texto */
+            font-size: 0.8rem;
         }
 
         .counter .date {
-            font-size: 0.7rem; /* Fonte da data menor */
+            font-size: 0.7rem;
             margin-bottom: 10px;
             color: #555;
         }
 
         .music-player {
-            margin-top: 15px; /* Distância entre o iframe e as caixas */
+            margin-top: 15px;
             width: 100%;
-            max-width: 250px; /* Ajustado para o mesmo tamanho das caixas */
+            max-width: 250px;
             text-align: center;
             display: flex;
             justify-content: center;
@@ -112,18 +117,18 @@
 
         @media (max-width: 600px) {
             .content {
-                top: 8%; /* Subir ainda mais no mobile */
+                top: 2%; /* Subi ainda mais no mobile */
                 font-size: 0.9rem;
             }
 
             h1 {
                 font-size: 1.5rem;
-                margin-top: 50px;
+                margin-top: 30px;
             }
 
             .counter {
                 font-size: 0.9rem;
-                max-width: 85%; /* Ajuste para o mobile */
+                max-width: 85%;
                 margin: 5px;
             }
 
@@ -136,19 +141,18 @@
             }
 
             .music-player {
-                max-width: 85%; /* Ajuste do iframe para o mobile */
-                margin-top: 15px;
+                max-width: 85%;
+                margin-top: 10px;
             }
 
             .music-player iframe {
-                height: 70px; /* Menor iframe no mobile */
+                height: 70px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Vídeo de fundo ajustado para suh.mp4 -->
     <video class="video-background" autoplay loop muted playsinline>
         <source src="suh.mp4" type="video/mp4">
         Seu navegador não suporta a tag de vídeo.
