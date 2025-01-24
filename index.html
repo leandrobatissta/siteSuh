@@ -26,6 +26,7 @@
             height: 100%;
             object-fit: cover;
             z-index: -1;
+            pointer-events: none;
         }
 
         .content {
@@ -131,7 +132,7 @@
 <body>
 
     <!-- Vídeo de fundo ajustado para suh.mp4 -->
-    <video class="video-background" autoplay loop muted>
+    <video class="video-background" autoplay loop muted playsinline>
         <source src="suh.mp4" type="video/mp4">
         Seu navegador não suporta a tag de vídeo.
     </video>
