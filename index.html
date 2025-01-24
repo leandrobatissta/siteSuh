@@ -31,7 +31,7 @@
 
         .content {
             position: absolute;
-            top: 5%;
+            top: 10%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
@@ -54,7 +54,7 @@
 
         .counter {
             font-size: 1rem;
-            margin: 20px;
+            margin: 10px;
             background: rgba(255, 255, 255, 0.8);
             padding: 20px;
             border-radius: 10px;
@@ -97,34 +97,56 @@
             height: 90px;
         }
 
-        /* Adicionando a borda acima do nome da música */
         .top-section {
             width: 100%;
             text-align: center;
             margin-bottom: 20px;
-            border-top: 3px solid white; /* Borda maior */
-            padding-top: 20px; /* Aumentado o espaçamento da borda para o texto */
+            border-top: 3px solid white;
+            padding-top: 20px;
         }
 
-        /* Tamanho do título da música reduzido e em branco */
         .top-section h2 {
-            font-size: 1rem; /* Reduzido pela metade */
-            color: white; /* Nome da música em branco */
+            font-size: 1rem;
+            color: white;
         }
 
         @media (max-width: 600px) {
             .content {
-                top: 10%;
+                top: 15%; /* Título mais para baixo */
                 font-size: 0.9rem;
-            }
-
-            .counter {
-                font-size: 0.9rem;
-                max-width: 90%;
             }
 
             h1 {
                 font-size: 1.5rem;
+                margin-top: 50px; /* Ajuste adicional para o título no mobile */
+            }
+
+            .counter {
+                font-size: 0.9rem;
+                max-width: 90%; /* Caixas menores no mobile */
+                margin: 5px;
+            }
+
+            .counter h2 {
+                font-size: 1.2rem;
+            }
+
+            .counter p {
+                font-size: 0.9rem;
+            }
+
+            .music-player {
+                max-width: 100%;
+            }
+
+            /* Alinhar "Suh & Lele" em outra linha e contadores na mesma linha */
+            .content {
+                flex-direction: column;
+            }
+
+            h1 {
+                margin-top: 50px;
+                font-size: 1.6rem;
             }
         }
     </style>
@@ -138,7 +160,8 @@
     </video>
 
     <div class="content">
-        <h1>Contador de Vidas ! Suh & Lele</h1>
+        <h1>Contador de Vidas!</h1>
+        <h2>Suh & Lele</h2>
 
         <div class="counter" id="first-life">
             <p class="date">25/04/2023</p>
