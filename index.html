@@ -219,17 +219,18 @@
         pointer-events: auto; /* Permite interação */
     }
 
-    /* Animação para o coração */
-.falling-heart {
+    .falling-heart {
     position: absolute;
-    top: -100px; /* Inicia acima da tela */
+    top: -100px; 
     left: 50%;
     transform: translateX(-50%);
     font-size: 4rem;
     color: red;
     z-index: 9999;
-    animation: fall 12s linear infinite, zigzag 16s ease-in-out infinite; /* A animação cai em 12 segundos e zigue-zague a cada 16 segundos */
+    animation: fall 12s linear infinite, zigzag 16s ease-in-out infinite;
+    display: none; /* Inicialmente escondido */
 }
+
 
 /* Animação de queda */
 @keyframes fall {
@@ -492,6 +493,13 @@ setInterval(checkHeartPosition, 16); // Verifica a cada 16ms (aproximadamente 60
     <script>
     // Quando o coração for clicado, altera o vídeo
 document.querySelector('.falling-heart').addEventListener('click', function() {
+    // Pausar o áudio "Bom Pay" se estiver tocando
+    const audioElement = document.getElementById('background-music');
+    if (!audioElement.paused) {
+        audioElement.pause(); // Pausa a música
+        document.getElementById('buttonLabel').innerText = "Tocar Música"; // Atualiza o botão
+    }
+
     const videoElement = document.getElementById('video-bg');
     const videoSource = document.getElementById('video-source');
     const heart = document.querySelector('.falling-heart');
@@ -541,6 +549,30 @@ document.querySelector('.falling-heart').addEventListener('click', function() {
         videoElement.muted = true;  // Volta o vídeo para mudo
     });
 });
+
+// Função para exibir o coração com 20% de chance
+function showHeartRandomly() {
+    const chance = Math.random(); // Gera um número aleatório entre 0 e 1
+    if (chance <= 0.2) { // 20% de chance
+        const heart = document.createElement('div');
+        heart.classList.add('falling-heart');
+        heart.innerHTML = '❤️'; // O emoji de coração
+        document.body.appendChild(heart);
+
+        // Faz o coração aparecer com a animação
+        heart.style.display = 'block';
+
+        // Configura o coração para ser removido depois da animação
+        setTimeout(() => {
+            heart.remove();
+        }, 12000); // Remove após 12 segundos (duração da animação)
+    }
+}
+
+// Chama a função a cada 15 segundos
+setInterval(showHeartRandomly, 15000);
+
+
 
 
 
