@@ -31,7 +31,7 @@
 
         .content {
             position: absolute;
-            top: 0%; /* Subi ainda mais o conteúdo */
+            top: 0%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
@@ -49,12 +49,13 @@
 
         h1 {
             font-size: 1.6rem;
-            margin-bottom: 5px; /* Diminuí o espaço entre o título e o nome */
+            margin-bottom: 5px;
+            color: white;
         }
 
         h2 {
             font-size: 1.4rem;
-            margin-top: 0; /* Removi a margem superior para reduzir o espaço entre as linhas do título */
+            margin-top: 0;
         }
 
         .counter {
@@ -86,27 +87,26 @@
             color: #555;
         }
 
+        .counter .highlighted-text {
+            color: yellow;
+            font-weight: bold;
+        }
+
         .music-player {
             margin-top: 15px;
             width: 100%;
             max-width: 250px;
             text-align: center;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-        }
-
-        .music-player iframe {
-            border: none;
-            width: 100%;
-            height: 90px;
         }
 
         .top-section {
             width: 100%;
             text-align: center;
             margin-bottom: 20px;
-            border-top: 3px solid white;
             padding-top: 20px;
         }
 
@@ -115,9 +115,14 @@
             color: white;
         }
 
+        .top-section p {
+            font-size: 0.9rem;
+            color: white;
+        }
+
         @media (max-width: 600px) {
             .content {
-                top: 2%; /* Subi ainda mais no mobile */
+                top: 2%;
                 font-size: 0.9rem;
             }
 
@@ -153,17 +158,27 @@
 </head>
 <body>
 
-    <video class="video-background" autoplay loop muted playsinline>
-        <source src="suh.mp4" type="video/mp4">
+    <video class="video-background" id="video-bg" autoplay muted playsinline>
+        <source id="video-source" src="suh1.mp4" type="video/mp4">
         Seu navegador não suporta a tag de vídeo.
     </video>
+
+    <audio id="background-music" loop>
+        <source src="OutraVida.mp3" type="audio/mp3">
+        Seu navegador não suporta a tag de áudio.
+    </audio>
 
     <div class="content">
         <h1>Contador de Vidas!</h1>
         <h2>Suh & Lele</h2>
 
+        <!-- Frases em amarelo acima das caixas -->
+        <div class="top-section">
+            <h1 style="color: yellow;" id="days-together-second">40 Dias Juntos!</h1> <!-- Texto dinâmico -->
+        </div>
+
         <div class="counter" id="first-life">
-            <p class="date">25/04/2023</p>
+            <p class="date" id="first-life-date"></p>
             <h2>Primeira Vida!</h2>
             <p id="first-days">00 Dias</p>
             <p id="first-hours">00 Horas</p>
@@ -172,7 +187,7 @@
         </div>
 
         <div class="counter" id="second-life">
-            <p class="date">16/12/2024</p>
+            <p class="date" id="second-life-date"></p>
             <h2>Na Outra Vida!</h2>
             <p id="second-days">00 Dias</p>
             <p id="second-hours">00 Horas</p>
@@ -180,17 +195,13 @@
             <p id="second-seconds">00 Segundos</p>
         </div>
 
-        <!-- Player do Deezer logo abaixo -->
         <div class="music-player">
-            <iframe 
-                title="deezer-widget" 
-                src="https://widget.deezer.com/widget/auto/track/718665152?start=15" 
-                width="100%" 
-                height="300" 
-                frameborder="0" 
-                allowtransparency="true" 
-                allow="encrypted-media; clipboard-write">
-            </iframe>
+            <!-- Botão restaurado para a cor das caixas -->
+            <button id="playButton" style="background-color: rgba(255, 255, 255, 0.8); padding: 10px 20px; color: #555; font-size: 1.1rem; border: none; border-radius: 5px; text-align: center; width: 100%; max-width: 250px;">Tocar Música</button>
+            <p style="color: white; margin-top: 10px; font-size: 0.9rem;">Armandinho - Outra Vida (Acústico)</p>
+
+            <!-- Frase da data logo abaixo do botão -->
+            <p id="current-date" style="font-size: 1.1rem; margin-top: 10px; color: #555;"></p> <!-- Data ajustada para o mesmo tamanho e cor do botão -->
         </div>
     </div>
 
@@ -198,6 +209,18 @@
         const startDateFirstLife = new Date('2023-04-25T00:00:00').getTime();
         const startDateSecondLife = new Date('2024-12-16T00:00:00').getTime();
 
+        // Função para atualizar a data de forma dinâmica
+        function updateDate() {
+            const currentDate = new Date();
+            const formattedDate = currentDate.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('first-life-date').innerText = formattedDate; // Atualiza a data para o primeiro contador
+            document.getElementById('second-life-date').innerText = formattedDate; // Atualiza a data para o segundo contador
+
+            // Atualiza a data abaixo do botão
+            document.getElementById('current-date').innerText = formattedDate;
+        }
+
+        // Função para atualizar o contador
         function updateCounter() {
             const now = new Date().getTime();
 
@@ -225,6 +248,41 @@
         }
 
         setInterval(updateCounter, 1000);
+        setInterval(updateDate, 60000); // Atualiza a data a cada minuto
+
+        // Sequência de vídeos sem aleatoriedade
+        const videoSources = ["suh1.mp4", "suh2.mp4", "suh3.mp4", "suh4.mp4", "suh5.mp4", "suh6.mp4", "suh7.mp4"];
+        let currentVideoIndex = 0;
+        const videoElement = document.getElementById("video-bg");
+        const videoSource = document.getElementById("video-source");
+
+        // Função para carregar o próximo vídeo
+        function playNextVideo() {
+            videoSource.src = videoSources[currentVideoIndex];
+            videoElement.load();
+            videoElement.play();
+
+            currentVideoIndex = (currentVideoIndex + 1) % videoSources.length;
+        }
+
+        // Reproduz o primeiro vídeo quando a página carregar
+        videoElement.onended = playNextVideo;
+
+        // Configura o botão de play para a música
+        const playButton = document.getElementById('playButton');
+        const backgroundMusic = document.getElementById('background-music');
+
+        playButton.addEventListener('click', function() {
+            if (backgroundMusic.paused) {
+                backgroundMusic.currentTime = 5; // Inicia no segundo 5
+                backgroundMusic.play();
+                playButton.innerText = "Música Pausada";
+            } else {
+                backgroundMusic.pause();
+                playButton.innerText = "Tocar Música";
+            }
+        });
     </script>
+
 </body>
 </html>
