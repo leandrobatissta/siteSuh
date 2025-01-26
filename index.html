@@ -219,7 +219,26 @@
         pointer-events: auto; /* Permite interação */
     }
 
+    /* Animação para o coração */
+    .falling-heart {
+        position: absolute;
+        top: -100px; /* Inicia acima da tela */
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 4rem;
+        color: red;
+        z-index: 9999;
+        animation: fall 3s linear infinite; /* A animação cai em 3 segundos */
+    }
 
+    @keyframes fall {
+        0% {
+            top: -100px;
+        }
+        100% {
+            top: 100%;
+        }
+    }
     </style>
 </head>
 <body>
@@ -233,6 +252,9 @@
         <source src="OutraVida.mp3" type="audio/mp3">
         Seu navegador não suporta a tag de áudio.
     </audio>
+
+    <!-- O coração em queda -->
+    <div class="falling-heart">❤️</div>
 
     <div class="content" id="content">
         <div id="timer">10</div>
