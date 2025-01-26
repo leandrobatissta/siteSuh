@@ -14,7 +14,7 @@
         body, html {
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            overflow: scroll; /* Restabelecer o scroll */
             font-family: Arial, sans-serif;
         }
 
@@ -31,7 +31,7 @@
 
         .content {
             position: absolute;
-            top: 7.5%; /* Ajuste aqui para subir menos */
+            top: 7.5%; /* Ajuste para a altura correta */
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
@@ -45,6 +45,7 @@
             text-align: center;
             width: 100%;
             padding: 0 20px;
+            transform: scale(0.9); /* Reduzir tamanho em 10% */
         }
 
         h1 {
@@ -140,6 +141,7 @@
             .content {
                 top: 5%; /* Ajuste adicional para telas menores */
                 font-size: 0.8rem;
+                transform: scale(0.9); /* Reduzir tamanho em 10% */
             }
 
             h1 {
