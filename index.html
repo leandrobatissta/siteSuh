@@ -27,11 +27,13 @@
             object-fit: cover;
             z-index: -1;
             pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.1s ease-in-out;
         }
 
         .content {
             position: absolute;
-            top: 20%;
+            bottom: 10%; /* Mover o conteúdo para a parte inferior com uma margem */
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
@@ -54,16 +56,16 @@
         }
 
         h2 {
-            font-size: 1.4rem;
+            font-size: 5rem; /* Aumentando o tamanho do título "Suh & Lele" para o dobro */
             margin-top: 5px;
             color: white;
         }
 
         .counter {
             font-size: 0.9rem;
-            margin: 10px;
+            margin: 0;
             background: rgba(255, 255, 255, 0.8);
-            padding: 12px;
+            padding: 10px;
             border-radius: 10px;
             display: inline-block;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -74,17 +76,17 @@
 
         .counter h2 {
             font-size: 1.1rem;
-            margin-bottom: 5px;
+            margin: 0;
         }
 
         .counter p {
-            margin: 3px 0;
+            margin: 0;
             font-size: 0.8rem;
         }
 
         .counter .date {
             font-size: 0.7rem;
-            margin-bottom: 5px;
+            margin: 0;
             color: #555;
         }
 
@@ -131,13 +133,12 @@
         #first-life-date, #second-life-date {
             font-size: 0.8rem;
             color: white;
-            margin-top: 15px;
-            margin-bottom: 10px;
+            margin-top: 5px;
         }
 
         @media (max-width: 600px) {
             .content {
-                top: 20%;
+                bottom: 5%;
                 font-size: 0.8rem;
             }
 
@@ -146,10 +147,16 @@
                 margin-top: 15px;
             }
 
+            h2 {
+                font-size: 2rem; /* Ajustando a fonte para tela pequena */
+                margin-bottom: 10px;
+            }
+
             .counter {
                 font-size: 0.9rem;
                 max-width: 90%;
                 margin: 5px;
+                padding: 5px; /* Reduzindo o padding */
             }
 
             .counter h2 {
@@ -178,6 +185,14 @@
                 font-size: 0.9rem;
                 margin-top: 5px;
             }
+
+            #current-date {
+                font-size: 1.5rem; /* Reduzindo o tamanho da data em telas pequenas */
+            }
+
+            #first-life-date, #second-life-date {
+                font-size: 0.7rem; /* Ajustando o tamanho das datas em telas pequenas */
+            }
         }
     </style>
 </head>
@@ -194,7 +209,6 @@
     </audio>
 
     <div class="content">
-        <h1>Contador de Vidas!</h1>
         <h2>Suh & Lele</h2>
 
         <div class="top-section">
@@ -283,27 +297,40 @@
     let playedVideos = [];
 
     function playNextVideo() {
-        let nextVideo;
-
-        if (playedVideos.length === 0) {
-            nextVideo = "suh1.mp4"; // Primeiro vídeo obrigatório
-        } else if (playedVideos.length === videoSources.length) {
-            playedVideos = [];
-            nextVideo = videoSources[Math.floor(Math.random() * videoSources.length)];
-        } else {
-            do {
-                nextVideo = videoSources[Math.floor(Math.random() * videoSources.length)];
-            } while (playedVideos.includes(nextVideo));
-        }
-
-        playedVideos.push(nextVideo);
-
-        const videoElement = document.getElementById('video-source');
-        videoElement.src = nextVideo;
-
         const videoBg = document.getElementById('video-bg');
-        videoBg.load();
-        videoBg.play();
+        const videoElement = document.getElementById('video-source');
+
+        // Primeiro, faça a transição de opacidade para 0
+        videoBg.style.opacity = 0;
+
+        setTimeout(() => {
+            // Definir o próximo vídeo
+            let nextVideo;
+
+            if (playedVideos.length === 0) {
+                nextVideo = "suh1.mp4"; // Primeiro vídeo obrigatório
+            } else if (playedVideos.length === videoSources.length) {
+                playedVideos = [];
+                nextVideo = videoSources[Math.floor(Math.random() * videoSources.length)];
+            } else {
+                do {
+                    nextVideo = videoSources[Math.floor(Math.random() * videoSources.length)];
+                } while (playedVideos.includes(nextVideo));
+            }
+
+            playedVideos.push(nextVideo);
+
+            // Trocar a fonte do vídeo
+            videoElement.src = nextVideo;
+            videoBg.load();
+            videoBg.play();
+
+            // Após carregar e iniciar o novo vídeo, faça a transição de opacidade para 1
+            setTimeout(() => {
+                videoBg.style.opacity = 1;
+            }, 100); // Aguarda 0.1s antes de tornar o vídeo visível novamente
+
+        }, 100); // Espera 0.1s antes de trocar a fonte do vídeo
     }
 
     // Evento para reproduzir o próximo vídeo ao término do atual
