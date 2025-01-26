@@ -27,7 +27,7 @@
             object-fit: cover;
             z-index: -1;
             pointer-events: none;
-            transition: opacity 0.3s ease-in-out;
+            transition: opacity 0.3s ease-in-out; /* Transição mais rápida */
         }
 
         .content {
@@ -262,6 +262,15 @@
         const startDateFirstLife = new Date('2023-04-25T00:00:00').getTime();
         const startDateSecondLife = new Date('2024-12-16T00:00:00').getTime();
 
+        // Função para pré-carregar todos os vídeos
+        function preloadVideos() {
+            videoSources.forEach(src => {
+                const video = document.createElement('video');
+                video.src = src;
+                video.preload = 'auto'; // Precarrega o vídeo
+            });
+        }
+
         function playNextVideo() {
             let nextVideo;
 
@@ -282,11 +291,13 @@
                 videoBg.load();
                 videoBg.play();
                 videoBg.style.opacity = 1;
-            }, 100);
+            }, 300);  // Tempo para transição suave (0.3 segundos)
         }
 
         const videoElement = document.getElementById('video-bg');
         videoElement.addEventListener('ended', playNextVideo);
+
+        preloadVideos(); // Pré-carrega os vídeos
 
         playNextVideo();
 
