@@ -27,18 +27,18 @@
             object-fit: cover;
             z-index: -1;
             pointer-events: none;
-            transition: opacity 0.1s ease-in-out;
+            transition: opacity 0.3s ease-in-out; /* Melhorar transição */
         }
 
         .content {
             position: absolute;
-            top: 0%; /* Puxado para o topo */
+            top: 5%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Ajustado para alinhar o conteúdo no topo */
+            justify-content: flex-start;
             align-items: center;
             height: 100%;
             color: white;
@@ -80,7 +80,7 @@
 
         .music-player {
             position: fixed;
-            bottom: 30px; /* Desceu o botão */
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 2;
@@ -114,7 +114,7 @@
         /* Ajustes para mobile */
         @media (max-width: 600px) {
             .content {
-                top: 5%; /* Ajustado para ficar mais próximo do topo */
+                top: 5%;
                 padding: 0 10px;
             }
 
@@ -152,7 +152,7 @@
             background-color: rgba(255, 255, 255, 0.8);
             color: black;
             border: none;
-            padding: 15px 0; /* Ajusta para a largura das caixas */
+            padding: 15px 0;
             text-align: center;
             text-decoration: none;
             display: inline-block;
@@ -161,7 +161,7 @@
             border-radius: 5px;
             transition: background-color 0.3s;
             margin-bottom: 10px;
-            width: 250px; /* Mesma largura das caixas */
+            width: 250px;
         }
 
         .play-button:hover {
@@ -182,15 +182,15 @@
 
         /* Mensagem que aparece quando o conteúdo é ocultado */
         .tap-message {
-            font-size: 1.2rem; /* Diminui a fonte para celular */
+            font-size: 1.2rem;
             color: white;
             margin-bottom: 10px;
-            display: none; /* Inicialmente escondido */
+            display: none;
         }
 
         /* Mensagem acima do botão play */
         .tap-message-above {
-            font-size: 1rem; /* Fonte pequena */
+            font-size: 1rem;
             color: white;
             margin-bottom: 10px;
             display: none;
@@ -210,11 +210,11 @@
     </audio>
 
     <div class="content" id="content">
-        <div id="timer">10</div> <!-- Contador Regressivo -->
+        <div id="timer">10</div>
         <h2>Suh & Lele</h2>
 
         <div class="top-section">
-            <h1 style="color: yellow;" id="days-together-second">Dias Juntos!</h1>
+            <h1 style="color: yellow;" id="days-together-second">0 Dias Juntos</h1> <!-- Inicializando a frase -->
         </div>
 
         <p id="current-date"></p>
@@ -235,7 +235,7 @@
     </div>
 
     <div class="music-player" id="music-player">
-        <div class="tap-message-above" id="tapMessageAbove">Toque na tela para o menu voltar!</div> <!-- Frase acima do botão -->
+        <div class="tap-message-above" id="tapMessageAbove">Toque na tela para o menu voltar!</div>
         <button id="playButton" class="play-button">
             <div class="button-label" id="buttonLabel">Tocar Música</div>
         </button>
@@ -253,6 +253,7 @@
         const timerDisplay = document.getElementById('timer');
         const tapMessage = document.getElementById('tapMessage');
         const tapMessageAbove = document.getElementById('tapMessageAbove');
+        const daysTogetherSecond = document.getElementById('days-together-second');
 
         const startDateFirstLife = new Date('2023-04-25T00:00:00').getTime();
         const startDateSecondLife = new Date('2024-12-16T00:00:00').getTime();
@@ -272,12 +273,12 @@
             videoElement.src = nextVideo;
 
             const videoBg = document.getElementById('video-bg');
-            videoBg.style.opacity = 0; // Fade out
+            videoBg.style.opacity = 0;
             setTimeout(() => {
                 videoBg.load();
                 videoBg.play();
-                videoBg.style.opacity = 1; // Fade in
-            }, 100); // Transição de 0.1s
+                videoBg.style.opacity = 1; /* Transição mais rápida */
+            }, 100); /* Menor tempo de transição */
         }
 
         const videoElement = document.getElementById('video-bg');
@@ -297,14 +298,15 @@
             // Primeira Vida
             const firstLifeTime = now - startDateFirstLife;
             const firstDays = Math.floor(firstLifeTime / (1000 * 60 * 60 * 24));
-
             document.getElementById('first-days').innerText = `${firstDays} Dias`;
 
             // Na Outra Vida
             const secondLifeTime = now - startDateSecondLife;
             const secondDays = Math.floor(secondLifeTime / (1000 * 60 * 60 * 24));
-
             document.getElementById('second-days').innerText = `${secondDays} Dias`;
+
+            // Atualizando a frase 'Dias Juntos'
+            daysTogetherSecond.innerText = `${secondDays} Dias Juntos`; /* Número de dias no início da frase */
         }
 
         setInterval(updateDate, 1000);
@@ -320,9 +322,9 @@
 
                 if (timerCount === 0) {
                     clearInterval(hideTimeout);
-                    content.style.display = 'none';  // Aqui o conteúdo é ocultado
-                    tapMessage.style.display = 'block';  // Exibe a mensagem
-                    tapMessageAbove.style.display = 'block'; // Exibe a mensagem acima do botão
+                    content.style.display = 'none';
+                    tapMessage.style.display = 'block';
+                    tapMessageAbove.style.display = 'block';
                 }
             }, 1000);
         }
@@ -331,9 +333,9 @@
             clearInterval(hideTimeout);
             timerCount = 10;
             timerDisplay.innerText = timerCount;
-            content.style.display = 'block';  // O conteúdo é mostrado novamente
-            tapMessage.style.display = 'none';  // Oculta a mensagem
-            tapMessageAbove.style.display = 'none'; // Oculta a mensagem acima do botão
+            content.style.display = 'block';
+            tapMessage.style.display = 'none';
+            tapMessageAbove.style.display = 'none';
             startHideTimer();
         }
 
