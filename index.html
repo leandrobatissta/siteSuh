@@ -220,16 +220,49 @@
     }
 
     /* Animação para o coração */
-    .falling-heart {
-        position: absolute;
-        top: -100px; /* Inicia acima da tela */
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 4rem;
-        color: red;
-        z-index: 9999;
-        animation: fall 3s linear infinite; /* A animação cai em 3 segundos */
+.falling-heart {
+    position: absolute;
+    top: -100px; /* Inicia acima da tela */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 4rem;
+    color: red;
+    z-index: 9999;
+    animation: fall 12s linear infinite, zigzag 16s ease-in-out infinite; /* A animação cai em 12 segundos e zigue-zague a cada 16 segundos */
+}
+
+/* Animação de queda */
+@keyframes fall {
+    0% {
+        top: -100px;
     }
+    100% {
+        top: 100%;
+    }
+}
+
+/* Animação em Zigue-Zague */
+@keyframes zigzag {
+    0% {
+        transform: translateX(-50%) translateX(0);
+    }
+    20% {
+        transform: translateX(-50%) translateX(-100px); /* Move mais para a esquerda */
+    }
+    40% {
+        transform: translateX(-50%) translateX(100px); /* Move para a direita */
+    }
+    60% {
+        transform: translateX(-50%) translateX(-100px); /* Move mais para a esquerda novamente */
+    }
+    80% {
+        transform: translateX(-50%) translateX(100px); /* Move para a direita novamente */
+    }
+    100% {
+        transform: translateX(-50%) translateX(0); /* Retorna ao centro */
+    }
+}
+
 
     @keyframes fall {
         0% {
