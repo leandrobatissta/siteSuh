@@ -484,6 +484,72 @@ function checkHeartPosition() {
 // Chame a função de verificação de posição a cada frame da animação
 setInterval(checkHeartPosition, 16); // Verifica a cada 16ms (aproximadamente 60fps)
 
+
+
+
+
     </script>
+    <script>
+    // Quando o coração for clicado, altera o vídeo
+document.querySelector('.falling-heart').addEventListener('click', function() {
+    const videoElement = document.getElementById('video-bg');
+    const videoSource = document.getElementById('video-source');
+    const heart = document.querySelector('.falling-heart');
+    const allVideos = document.querySelectorAll('video');  // Seleciona todos os vídeos na página
+
+    // Troca a fonte do vídeo para 'suh4.mp4'
+    videoSource.src = "suh4.mp4";
+    videoElement.load();  // Carrega o novo vídeo
+    videoElement.play();  // Começa a reproduzir
+
+    // Esconde o coração durante a execução do vídeo
+    heart.style.display = 'none';
+
+    // Para a animação do coração
+    heart.style.animation = 'none';  // Isso vai interromper qualquer animação ativa
+
+    // Faz o vídeo preencher a tela sem ser full screen
+    videoElement.style.position = 'fixed';
+    videoElement.style.top = '0';
+    videoElement.style.left = '0';
+    videoElement.style.width = '100%';  // Preenche a largura da tela
+    videoElement.style.height = '100%'; // Preenche a altura da tela
+    videoElement.style.zIndex = '999';  // Coloca o vídeo sobre o layout
+
+    // Desativa o som de todos os vídeos na página
+    allVideos.forEach(v => v.muted = true);
+
+    // Ativa o som apenas no vídeo atual
+    videoElement.muted = false;
+
+    // Após o término do vídeo, retorne o layout anterior
+    videoElement.addEventListener('ended', function() {
+        // Retorna o layout ao estado inicial
+        videoElement.style.position = 'absolute';
+        videoElement.style.top = '0';
+        videoElement.style.left = '0';
+        videoElement.style.width = '100%';
+        videoElement.style.height = '100%';
+        videoElement.style.zIndex = '-1';  // Coloca o vídeo de volta ao fundo
+
+        // Reinicia o vídeo para a próxima execução normal
+        playNextVideo();
+
+        // Retorna o layout ao estado normal
+        heart.style.display = 'block';  // Mostra o coração novamente
+        heart.style.animation = '';  // Restaura a animação do coração, caso queira retomar
+        videoElement.muted = true;  // Volta o vídeo para mudo
+    });
+});
+
+
+
+
+
+
+
+</script>
+
+
 </body>
 </html>
