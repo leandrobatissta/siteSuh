@@ -182,10 +182,18 @@
 
         /* Mensagem que aparece quando o conteúdo é ocultado */
         .tap-message {
-            font-size: 1.5rem;
+            font-size: 1.2rem; /* Diminui a fonte para celular */
             color: white;
             margin-bottom: 10px;
             display: none; /* Inicialmente escondido */
+        }
+
+        /* Mensagem acima do botão play */
+        .tap-message-above {
+            font-size: 1rem; /* Fonte pequena */
+            color: white;
+            margin-bottom: 10px;
+            display: none;
         }
     </style>
 </head>
@@ -227,6 +235,7 @@
     </div>
 
     <div class="music-player" id="music-player">
+        <div class="tap-message-above" id="tapMessageAbove">Toque na tela para o menu voltar!</div> <!-- Frase acima do botão -->
         <button id="playButton" class="play-button">
             <div class="button-label" id="buttonLabel">Tocar Música</div>
         </button>
@@ -243,6 +252,7 @@
         const content = document.getElementById('content');
         const timerDisplay = document.getElementById('timer');
         const tapMessage = document.getElementById('tapMessage');
+        const tapMessageAbove = document.getElementById('tapMessageAbove');
 
         const startDateFirstLife = new Date('2023-04-25T00:00:00').getTime();
         const startDateSecondLife = new Date('2024-12-16T00:00:00').getTime();
@@ -312,6 +322,7 @@
                     clearInterval(hideTimeout);
                     content.style.display = 'none';  // Aqui o conteúdo é ocultado
                     tapMessage.style.display = 'block';  // Exibe a mensagem
+                    tapMessageAbove.style.display = 'block'; // Exibe a mensagem acima do botão
                 }
             }, 1000);
         }
@@ -322,6 +333,7 @@
             timerDisplay.innerText = timerCount;
             content.style.display = 'block';  // O conteúdo é mostrado novamente
             tapMessage.style.display = 'none';  // Oculta a mensagem
+            tapMessageAbove.style.display = 'none'; // Oculta a mensagem acima do botão
             startHideTimer();
         }
 
