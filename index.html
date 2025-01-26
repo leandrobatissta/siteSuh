@@ -565,9 +565,9 @@ function dropHeart() {
     if (clique === 1) {
         chance = 0.5;  // 50% no primeiro clique
     } else if (clique === 2) {
-        chance = 0.2;  // 30% no segundo clique
+        chance = 0.2;  // 20% no segundo clique
     } else if (clique >= 3) {
-        chance = 0.1;  // 20% a partir do terceiro clique
+        chance = 0;  // 0% a partir do terceiro clique
     }
     
     // Gera um número aleatório entre 0 e 1
