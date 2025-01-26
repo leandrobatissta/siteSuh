@@ -227,9 +227,10 @@
     font-size: 4rem;
     color: red;
     z-index: 9999;
-    animation: fall 12s linear infinite, zigzag 16s ease-in-out infinite;
     display: none; /* Inicialmente escondido */
+    /* Remova a animação daqui, não a defina no início */
 }
+
 
 
 /* Animação de queda */
@@ -549,6 +550,29 @@ document.querySelector('.falling-heart').addEventListener('click', function() {
         videoElement.muted = true;  // Volta o vídeo para mudo
     });
 });
+
+// Função para fazer o coração cair com probabilidade de 50%
+function dropHeart() {
+    const heart = document.querySelector('.falling-heart');
+
+    // Gera um número aleatório entre 0 e 1
+    const randomChance = Math.random();
+
+    // Se o número for <= 0.5, o coração aparecerá
+    if (randomChance <= 0.5) {
+        heart.style.display = 'block';
+        heart.style.animation = 'fall 12s linear infinite, zigzag 16s ease-in-out infinite';
+
+        // Depois de 12 segundos, o coração deve desaparecer
+        setTimeout(() => {
+            heart.style.display = 'none';  // Esconde o coração após a animação terminar
+            heart.style.animation = '';  // Remove a animação
+        }, 12000);  // 12000ms = 12 segundos (duração da animação)
+    }
+}
+
+// Chama a função dropHeart a cada 15 segundos
+setInterval(dropHeart, 15000);  // 15000 milissegundos = 15 segundos
 
 
 </script>
