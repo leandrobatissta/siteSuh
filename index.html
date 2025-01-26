@@ -27,7 +27,7 @@
             object-fit: cover;
             z-index: -1;
             pointer-events: none;
-            transition: opacity 0.3s ease-in-out; /* Melhorar transição */
+            transition: opacity 0.3s ease-in-out;
         }
 
         .content {
@@ -47,34 +47,27 @@
             width: 100%;
             padding: 10px;
             overflow-y: auto;
+            transition: opacity 0.5s ease;
         }
 
-        h1 {
+        h1, h2 {
             font-size: 3.6rem;
-            margin-bottom: 5px;
-        }
-
-        h2 {
-            font-size: 3.6rem;
-            margin-top: 5px;
         }
 
         .counter {
             font-size: 1.1rem;
-            margin: 10px 0;
             background: rgba(255, 255, 255, 0.8);
-            padding: 12px;
+            padding: 6px 12px;
             border-radius: 10px;
             display: inline-block;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center;
-            max-width: 250px;
             width: auto;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .counter p {
-            margin: 3px 0;
+            margin: 0;
             font-size: 0.9rem;
         }
 
@@ -99,8 +92,8 @@
 
         #first-life-date, #second-life-date {
             font-size: 0.8rem;
-            margin-top: 15px;
-            margin-bottom: 10px;
+            margin-top: 10px;
+            margin-bottom: 5px;
         }
 
         #timer {
@@ -111,7 +104,6 @@
             padding: 0;
         }
 
-        /* Ajustes para mobile */
         @media (max-width: 600px) {
             .content {
                 top: 5%;
@@ -147,7 +139,6 @@
             }
         }
 
-        /* Botão de Play/Pause */
         .play-button {
             background-color: rgba(255, 255, 255, 0.8);
             color: black;
@@ -180,19 +171,33 @@
             margin-bottom: 5px;
         }
 
-        /* Mensagem que aparece quando o conteúdo é ocultado */
-        .tap-message {
-            font-size: 1.2rem;
-            color: white;
-            margin-bottom: 10px;
-            display: none;
+        .music-name {
+            font-size: 12px;
+            color: black;
+            margin-top: 5px;
+            font-weight: bold;
         }
 
-        /* Mensagem acima do botão play */
-        .tap-message-above {
-            font-size: 1rem;
+        /* Mensagem "Toque na tela" */
+        .tap-message {
+            display: none;
+            font-size: 1.2rem;
             color: white;
-            margin-bottom: 10px;
+            position: absolute;
+            top: -50px; /* Acima do botão */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .tap-message.show {
+            display: block;
+        }
+
+        /* Fase oculta */
+        .hidden-content {
             display: none;
         }
     </style>
@@ -214,7 +219,7 @@
         <h2>Suh & Lele</h2>
 
         <div class="top-section">
-            <h1 style="color: yellow;" id="days-together-second">0 Dias Juntos</h1> <!-- Inicializando a frase -->
+            <h1 style="color: yellow;" id="days-together-second">0 Dias Juntos</h1>
         </div>
 
         <p id="current-date"></p>
@@ -230,14 +235,13 @@
             <p class="date" id="second-life-date">16/12/2024</p>
             <p id="second-days">00 Dias</p>
         </div>
-
-        <div class="tap-message" id="tapMessage">Toque na tela para o menu voltar!</div>
     </div>
 
     <div class="music-player" id="music-player">
-        <div class="tap-message-above" id="tapMessageAbove">Toque na tela para o menu voltar!</div>
+        <div class="tap-message" id="tapMessage">Toque na tela para o menu voltar!</div>
         <button id="playButton" class="play-button">
             <div class="button-label" id="buttonLabel">Tocar Música</div>
+            <div class="music-name" id="musicName">Armandinho - Outra Vida</div>
         </button>
     </div>
 
@@ -248,11 +252,11 @@
         const audioElement = document.getElementById('background-music');
         const playButton = document.getElementById('playButton');
         const buttonLabel = document.getElementById('buttonLabel');
+        const musicName = document.getElementById('musicName');
         const musicPlayer = document.getElementById('music-player');
         const content = document.getElementById('content');
         const timerDisplay = document.getElementById('timer');
         const tapMessage = document.getElementById('tapMessage');
-        const tapMessageAbove = document.getElementById('tapMessageAbove');
         const daysTogetherSecond = document.getElementById('days-together-second');
 
         const startDateFirstLife = new Date('2023-04-25T00:00:00').getTime();
@@ -277,8 +281,8 @@
             setTimeout(() => {
                 videoBg.load();
                 videoBg.play();
-                videoBg.style.opacity = 1; /* Transição mais rápida */
-            }, 100); /* Menor tempo de transição */
+                videoBg.style.opacity = 1;
+            }, 100);
         }
 
         const videoElement = document.getElementById('video-bg');
@@ -295,18 +299,15 @@
         function updateCounter() {
             const now = new Date().getTime();
 
-            // Primeira Vida
             const firstLifeTime = now - startDateFirstLife;
             const firstDays = Math.floor(firstLifeTime / (1000 * 60 * 60 * 24));
             document.getElementById('first-days').innerText = `${firstDays} Dias`;
 
-            // Na Outra Vida
             const secondLifeTime = now - startDateSecondLife;
             const secondDays = Math.floor(secondLifeTime / (1000 * 60 * 60 * 24));
             document.getElementById('second-days').innerText = `${secondDays} Dias`;
 
-            // Atualizando a frase 'Dias Juntos'
-            daysTogetherSecond.innerText = `${secondDays} Dias Juntos`; /* Número de dias no início da frase */
+            daysTogetherSecond.innerText = `${secondDays} Dias Juntos`;
         }
 
         setInterval(updateDate, 1000);
@@ -323,8 +324,7 @@
                 if (timerCount === 0) {
                     clearInterval(hideTimeout);
                     content.style.display = 'none';
-                    tapMessage.style.display = 'block';
-                    tapMessageAbove.style.display = 'block';
+                    tapMessage.classList.add('show');
                 }
             }, 1000);
         }
@@ -334,8 +334,7 @@
             timerCount = 10;
             timerDisplay.innerText = timerCount;
             content.style.display = 'block';
-            tapMessage.style.display = 'none';
-            tapMessageAbove.style.display = 'none';
+            tapMessage.classList.remove('show');
             startHideTimer();
         }
 
