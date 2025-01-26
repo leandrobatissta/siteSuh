@@ -35,7 +35,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
-            display: flex;
+            display: block; /* Inicia visível */
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -89,6 +89,7 @@
             align-items: center;
             width: 100%;
             padding: 10px 0;
+            pointer-events: auto;
         }
 
         #current-date {
@@ -164,11 +165,6 @@
 
         .play-button:hover {
             background-color: rgba(255, 255, 255, 0.9);
-        }
-
-        .playing {
-            background-color: #f44336;
-            color: white;
         }
 
         /* Nome da música */
@@ -274,75 +270,67 @@
             const daysFirstLife = Math.floor(distanceFirstLife / (1000 * 60 * 60 * 24));
             const hoursFirstLife = Math.floor((distanceFirstLife % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutesFirstLife = Math.floor((distanceFirstLife % (1000 * 60)) / (1000 * 60));
-            const secondsFirstLife = Math.floor((distanceFirstLife % (1000 * 60)) / 1000);
-
-            document.getElementById("first-days").innerText = `${daysFirstLife} Dias`;
-            document.getElementById("first-hours").innerText = `${hoursFirstLife} Horas`;
-            document.getElementById("first-minutes").innerText = `${minutesFirstLife} Minutos`;
-            document.getElementById("first-seconds").innerText = `${secondsFirstLife} Segundos`;
+            const secondsFirstLife = Math.floor((distanceFirstLife % 1000) / 1000);
 
             const distanceSecondLife = now - startDateSecondLife;
             const daysSecondLife = Math.floor(distanceSecondLife / (1000 * 60 * 60 * 24));
             const hoursSecondLife = Math.floor((distanceSecondLife % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutesSecondLife = Math.floor((distanceSecondLife % (1000 * 60)) / (1000 * 60));
-            const secondsSecondLife = Math.floor((distanceSecondLife % (1000 * 60)) / 1000);
+            const secondsSecondLife = Math.floor((distanceSecondLife % 1000) / 1000);
 
-            document.getElementById("second-days").innerText = `${daysSecondLife} Dias`;
-            document.getElementById("second-hours").innerText = `${hoursSecondLife} Horas`;
-            document.getElementById("second-minutes").innerText = `${minutesSecondLife} Minutos`;
-            document.getElementById("second-seconds").innerText = `${secondsSecondLife} Segundos`;
+            document.getElementById('first-days').innerText = `${daysFirstLife} Dias`;
+            document.getElementById('first-hours').innerText = `${hoursFirstLife} Horas`;
+            document.getElementById('first-minutes').innerText = `${minutesFirstLife} Minutos`;
+            document.getElementById('first-seconds').innerText = `${secondsFirstLife} Segundos`;
+
+            document.getElementById('second-days').innerText = `${daysSecondLife} Dias`;
+            document.getElementById('second-hours').innerText = `${hoursSecondLife} Horas`;
+            document.getElementById('second-minutes').innerText = `${minutesSecondLife} Minutos`;
+            document.getElementById('second-seconds').innerText = `${secondsSecondLife} Segundos`;
         }
 
-        let timer = 10;
-        function startHideTimer() {
-            setInterval(function() {
-                if (timer > 1) {
-                    timer--;
-                    timerDisplay.textContent = timer;
-                } else {
-                    hideContent();
+        let timerInterval;
+        let countdown = 10;
+
+        function startTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            countdown = 10;
+            timerInterval = setInterval(function() {
+                timerDisplay.textContent = countdown;
+                countdown--;
+                if (countdown < 0) {
+                    clearInterval(timerInterval);
+                    content.style.display = 'none'; // Oculta o conteúdo após 10 segundos
                 }
             }, 1000);
         }
 
-        function resetHideTimer() {
-            timer = 10;
-            timerDisplay.textContent = timer;
-        }
-
-        function hideContent() {
-            content.style.display = 'none';
-            musicPlayer.style.display = 'flex'; // Sempre exibe o player de música
-        }
-
-        setTimeout(function() {
-            audioElement.play();
-        }, 4000);  // Começa a música no segundo 4
-
-        startHideTimer();
-
-        document.body.addEventListener('click', () => {
-            content.style.display = 'flex';
-            musicPlayer.style.display = 'flex'; // Player de música sempre visível
-            resetHideTimer();
-        });
-
         playButton.addEventListener('click', function() {
             if (audioElement.paused) {
+                audioElement.currentTime = 4.5; // Inicia a música no segundo 4.5
                 audioElement.play();
-                playButton.innerText = 'Pausar Música';
-                playButton.classList.add('playing');
+                playButton.textContent = 'Pausar Música';
             } else {
                 audioElement.pause();
-                playButton.innerText = 'Tocar Música';
-                playButton.classList.remove('playing');
+                playButton.textContent = 'Tocar Música';
             }
+
+            // Torna o conteúdo visível novamente e reinicia o contador
+            content.style.display = 'block';
+            startTimer();
         });
 
-        setInterval(updateCounter, 1000);
-        setInterval(updateDate, 1000);
-        updateCounter();
-    </script>
+        // Escutador para qualquer interação do usuário que faz o conteúdo reaparecer
+        document.body.addEventListener('click', function() {
+            content.style.display = 'block';
+            startTimer();
+        });
 
+        startTimer(); // Inicia o contador para ocultar o conteúdo após 10 segundos
+        setInterval(updateCounter, 1000); // Atualiza o contador constantemente
+    </script>
 </body>
 </html>
