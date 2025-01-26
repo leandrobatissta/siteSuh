@@ -103,7 +103,8 @@
 
         @media (max-width: 600px) {
             .content {
-                top: 15%;
+                top: 10%;
+                padding: 0 10px; /* Ajuste de padding */
             }
 
             h1 {
@@ -122,6 +123,16 @@
             .music-player {
                 margin-top: 10px;
                 max-width: 85%;
+            }
+        }
+
+        @media (max-width: 375px) {
+            h1, h2 {
+                font-size: 2rem;
+            }
+
+            .counter {
+                font-size: 0.9rem;
             }
         }
     </style>
