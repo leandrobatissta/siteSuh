@@ -507,7 +507,7 @@ document.querySelector('.falling-heart').addEventListener('click', function() {
     const allVideos = document.querySelectorAll('video');  // Seleciona todos os vídeos na página
 
     // Troca a fonte do vídeo para 'suh4.mp4'
-    videoSource.src = "suh4.mp4";
+    videoSource.src = "lele.mp4";
     videoElement.load();  // Carrega o novo vídeo
     videoElement.play();  // Começa a reproduzir
 
@@ -551,15 +551,31 @@ document.querySelector('.falling-heart').addEventListener('click', function() {
     });
 });
 
-// Função para fazer o coração cair com probabilidade de 50%
+let clique = 0;  // Contador de cliques
+
+// Função para fazer o coração cair com probabilidade que diminui a cada clique
 function dropHeart() {
     const heart = document.querySelector('.falling-heart');
-
+    
+    // Atualiza o contador de cliques
+    clique++;
+    
+    // Define a probabilidade com base no número de cliques
+    let chance;
+    if (clique === 1) {
+        chance = 0.5;  // 50% no primeiro clique
+    } else if (clique === 2) {
+        chance = 0.3;  // 30% no segundo clique
+    } else if (clique >= 3) {
+        chance = 0.2;  // 20% a partir do terceiro clique
+    }
+    
     // Gera um número aleatório entre 0 e 1
     const randomChance = Math.random();
-
-    // Se o número for <= 0.5, o coração aparecerá
-    if (randomChance <= 0.5) {
+    
+    // Se o número gerado for menor ou igual à chance definida, o coração aparece
+    if (randomChance <= chance) {
+        // Exibe o coração e aplica a animação
         heart.style.display = 'block';
         heart.style.animation = 'fall 12s linear infinite, zigzag 16s ease-in-out infinite';
 
