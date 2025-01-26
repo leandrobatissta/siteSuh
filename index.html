@@ -466,6 +466,24 @@
         });
 
         startHideTimer();
+
+        // Adicione a função para verificar a posição do coração
+function checkHeartPosition() {
+    const heart = document.querySelector('.falling-heart');
+    const playButtonRect = playButton.getBoundingClientRect();
+    const heartRect = heart.getBoundingClientRect();
+
+    // Verifique se o coração atingiu o botão de play
+    if (heartRect.bottom >= playButtonRect.top && heartRect.left <= playButtonRect.right && heartRect.right >= playButtonRect.left) {
+        heart.style.display = 'none'; // Esconde o coração quando ele atinge o botão de play
+    } else {
+        heart.style.display = 'block'; // Garante que o coração esteja visível caso não tenha atingido o botão
+    }
+}
+
+// Chame a função de verificação de posição a cada frame da animação
+setInterval(checkHeartPosition, 16); // Verifica a cada 16ms (aproximadamente 60fps)
+
     </script>
 </body>
 </html>
