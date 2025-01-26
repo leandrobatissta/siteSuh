@@ -563,11 +563,11 @@ function dropHeart() {
     // Define a probabilidade com base no número de cliques
     let chance;
     if (clique === 1) {
-        chance = 0.5;  // 50% no primeiro clique
+        chance = 0.4;  // 50% no primeiro clique
     } else if (clique === 2) {
-        chance = 0.3;  // 30% no segundo clique
+        chance = 0.2;  // 30% no segundo clique
     } else if (clique >= 3) {
-        chance = 0.2;  // 20% a partir do terceiro clique
+        chance = 0.1;  // 20% a partir do terceiro clique
     }
     
     // Gera um número aleatório entre 0 e 1
@@ -577,18 +577,19 @@ function dropHeart() {
     if (randomChance <= chance) {
         // Exibe o coração e aplica a animação
         heart.style.display = 'block';
-        heart.style.animation = 'fall 12s linear infinite, zigzag 16s ease-in-out infinite';
+        heart.style.animation = 'fall 12s linear, zigzag 16s ease-in-out';
 
-        // Depois de 12 segundos, o coração deve desaparecer
+        // Depois de 12 segundos, o coração deve desaparecer sem reaparecer
         setTimeout(() => {
             heart.style.display = 'none';  // Esconde o coração após a animação terminar
-            heart.style.animation = '';  // Remove a animação
+            heart.style.animation = '';  // Remove a animação para não reiniciar
         }, 12000);  // 12000ms = 12 segundos (duração da animação)
     }
 }
 
 // Chama a função dropHeart a cada 15 segundos
 setInterval(dropHeart, 15000);  // 15000 milissegundos = 15 segundos
+
 
 
 </script>
