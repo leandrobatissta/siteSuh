@@ -198,6 +198,28 @@
         .hidden-content {
             display: none;
         }
+
+        .counter {
+        margin-bottom: 20px; /* Reduz o espaço entre as caixas */
+    }
+
+    .music-player {
+        position: fixed;
+        bottom: 20px; /* Mantém o botão na parte inferior */
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 400px;
+        padding: 10px 0;
+        pointer-events: auto; /* Permite interação */
+    }
+
+
     </style>
 </head>
 <body>
