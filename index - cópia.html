@@ -14,12 +14,12 @@
         body, html {
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            overflow-x: hidden;
             font-family: Arial, sans-serif;
         }
 
         .video-background {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -27,157 +27,176 @@
             object-fit: cover;
             z-index: -1;
             pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
         }
 
         .content {
             position: absolute;
-            top: 20%;
+            top: 5%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
-            height: 80%;
+            height: 100%;
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
             text-align: center;
             width: 100%;
-            padding: 0 20px;
+            padding: 10px;
+            overflow-y: auto;
+            transition: opacity 0.5s ease;
         }
 
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-            color: white;
-        }
-
-        h2 {
-            font-size: 1.4rem;
-            margin-top: 5px;
-            color: white;
+        h1, h2 {
+            font-size: 3.6rem;
         }
 
         .counter {
-            font-size: 0.9rem;
-            margin: 10px;
+            font-size: 1.1rem;
             background: rgba(255, 255, 255, 0.8);
-            padding: 12px;
+            padding: 6px 12px;
             border-radius: 10px;
             display: inline-block;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center;
-            width: 100%;
-            max-width: 250px;
-        }
-
-        .counter h2 {
-            font-size: 1.1rem;
-            margin-bottom: 5px;
+            width: auto;
+            margin-bottom: 20px;
         }
 
         .counter p {
-            margin: 3px 0;
-            font-size: 0.8rem;
-        }
-
-        .counter .date {
-            font-size: 0.7rem;
-            margin-bottom: 5px;
-            color: #555;
-        }
-
-        .counter .highlighted-text {
-            color: yellow;
-            font-weight: bold;
+            margin: 0;
+            font-size: 0.9rem;
         }
 
         .music-player {
-            margin-top: 15px;
-            width: 100%;
-            max-width: 250px;
-            text-align: center;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-        }
-
-        .top-section {
             width: 100%;
-            text-align: center;
-            margin-bottom: 15px;
-            padding-top: 10px;
-        }
-
-        .top-section h2 {
-            font-size: 1rem;
-            color: white;
-        }
-
-        .top-section p {
-            font-size: 0.9rem;
-            color: white;
+            padding: 10px 0;
         }
 
         #current-date {
             font-size: 1.8rem;
-            color: white;
             padding-bottom: 10px;
-            margin-top: 0;
         }
 
         #first-life-date, #second-life-date {
             font-size: 0.8rem;
-            color: white;
-            margin-top: 15px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        #timer {
+            font-size: 2rem;
             margin-bottom: 10px;
+            background: transparent;
+            color: white;
+            padding: 0;
         }
 
         @media (max-width: 600px) {
             .content {
-                top: 20%;
-                font-size: 0.8rem;
+                top: 5%;
+                padding: 0 10px;
             }
 
             h1 {
-                font-size: 1.5rem;
-                margin-top: 15px;
+                font-size: 2.4rem;
+            }
+
+            h2 {
+                font-size: 2.4rem;
+            }
+
+            .counter {
+                max-width: 90%;
+                font-size: 1rem;
+            }
+
+            .music-player {
+                margin-top: 10px;
+                max-width: 85%;
+            }
+        }
+
+        @media (max-width: 375px) {
+            h1, h2 {
+                font-size: 2rem;
             }
 
             .counter {
                 font-size: 0.9rem;
-                max-width: 90%;
-                margin: 5px;
             }
+        }
 
-            .counter h2 {
-                font-size: 1.1rem;
-            }
+        .play-button {
+            background-color: rgba(255, 255, 255, 0.8);
+            color: black;
+            border: none;
+            padding: 15px 0;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin-bottom: 10px;
+            width: 250px;
+        }
 
-            .counter p {
-                font-size: 0.8rem;
-            }
+        .play-button:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
 
-            .music-player {
-                max-width: 85%;
-                margin-top: 10px;
-            }
+        .playing {
+            background-color: #f44336;
+            color: white;
+        }
 
-            .music-player iframe {
-                height: 70px;
-            }
+        .button-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: black;
+            margin-bottom: 5px;
+        }
 
-            .top-section {
-                margin-bottom: 10px;
-            }
+        .music-name {
+            font-size: 12px;
+            color: black;
+            margin-top: 5px;
+            font-weight: bold;
+        }
 
-            .top-section h2,
-            .top-section p {
-                font-size: 0.9rem;
-                margin-top: 5px;
-            }
+        .tap-message {
+            display: none;
+            font-size: 1.2rem;
+            color: white;
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .tap-message.show {
+            display: block;
+        }
+
+        .hidden-content {
+            display: none;
         }
     </style>
 </head>
@@ -193,132 +212,157 @@
         Seu navegador não suporta a tag de áudio.
     </audio>
 
-    <div class="content">
-        <h1>Contador de Vidas!</h1>
+    <div class="content" id="content">
+        <div id="timer">10</div>
         <h2>Suh & Lele</h2>
 
         <div class="top-section">
-            <h1 style="color: yellow;" id="days-together-second">Dias Juntos!</h1>
+            <h1 style="color: yellow;" id="days-together-second">0 Dias Juntos</h1>
         </div>
 
-        <p id="current-date" style="font-size: 1.8rem; color: white; padding-bottom: 10px; margin-top: 0;"></p>
+        <p id="current-date"></p>
 
         <div class="counter" id="first-life">
             <h2>Primeira Vida!</h2>
             <p class="date" id="first-life-date">25/04/2023</p>
             <p id="first-days">00 Dias</p>
-            <p id="first-hours">00 Horas</p>
-            <p id="first-minutes">00 Minutos</p>
-            <p id="first-seconds">00 Segundos</p>
         </div>
 
         <div class="counter" id="second-life">
             <h2>Na Outra Vida!</h2>
             <p class="date" id="second-life-date">16/12/2024</p>
             <p id="second-days">00 Dias</p>
-            <p id="second-hours">00 Horas</p>
-            <p id="second-minutes">00 Minutos</p>
-            <p id="second-seconds">00 Segundos</p>
-        </div>
-
-        <div class="music-player">
-            <button id="playButton" style="background-color: rgba(255, 255, 255, 0.8); padding: 10px 20px; color: #555; font-size: 1rem; border: none; border-radius: 5px; text-align: center; width: 100%; max-width: 250px;">Tocar Música</button>
-            <p style="color: white; margin-top: 10px; font-size: 0.9rem;">Armandinho - Outra Vida (Acústico)</p>
         </div>
     </div>
 
+    <div class="music-player" id="music-player">
+        <div class="tap-message" id="tapMessage">Toque na tela para o menu voltar!</div>
+        <button id="playButton" class="play-button">
+            <div class="button-label" id="buttonLabel">Tocar Música</div>
+            <div class="music-name" id="musicName">Armandinho - Outra Vida</div>
+        </button>
+    </div>
+
     <script>
-    const startDateFirstLife = new Date('2023-04-25T00:00:00').getTime();
-    const startDateSecondLife = new Date('2024-12-16T00:00:00').getTime();
+        const videoSources = ["suh1.mp4", "suh2.mp4", "suh3.mp4", "suh5.mp4", "suh6.mp4", "suh7.mp4", "suh8.mp4"];
+        let playedVideos = ["suh1.mp4"]; // Começa com o suh1.mp4
 
-    function updateDate() {
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' });
-        document.getElementById('current-date').innerText = formattedDate;
-    }
+        const audioElement = document.getElementById('background-music');
+        const playButton = document.getElementById('playButton');
+        const buttonLabel = document.getElementById('buttonLabel');
+        const musicName = document.getElementById('musicName');
+        const musicPlayer = document.getElementById('music-player');
+        const content = document.getElementById('content');
+        const timerDisplay = document.getElementById('timer');
+        const tapMessage = document.getElementById('tapMessage');
+        const daysTogetherSecond = document.getElementById('days-together-second');
 
-    function updateCounter() {
-        const now = new Date().getTime();
+        const startDateFirstLife = new Date('2023-04-25T00:00:00').getTime();
+        const startDateSecondLife = new Date('2024-12-16T00:00:00').getTime();
 
-        const distanceFirstLife = now - startDateFirstLife;
-        const daysFirstLife = Math.floor(distanceFirstLife / (1000 * 60 * 60 * 24));
-        const hoursFirstLife = Math.floor((distanceFirstLife % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutesFirstLife = Math.floor((distanceFirstLife % (1000 * 60)) / (1000 * 60));
-        const secondsFirstLife = Math.floor((distanceFirstLife % (1000 * 60)) / 1000);
-
-        document.getElementById("first-days").innerText = `${daysFirstLife} Dias`;
-        document.getElementById("first-hours").innerText = `${hoursFirstLife} Horas`;
-        document.getElementById("first-minutes").innerText = `${minutesFirstLife} Minutos`;
-        document.getElementById("first-seconds").innerText = `${secondsFirstLife} Segundos`;
-
-        const distanceSecondLife = now - startDateSecondLife;
-        const daysSecondLife = Math.floor(distanceSecondLife / (1000 * 60 * 60 * 24));
-        const hoursSecondLife = Math.floor((distanceSecondLife % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutesSecondLife = Math.floor((distanceSecondLife % (1000 * 60)) / (1000 * 60));
-        const secondsSecondLife = Math.floor((distanceSecondLife % (1000 * 60)) / 1000);
-
-        document.getElementById("second-days").innerText = `${daysSecondLife} Dias`;
-        document.getElementById("second-hours").innerText = `${hoursSecondLife} Horas`;
-        document.getElementById("second-minutes").innerText = `${minutesSecondLife} Minutos`;
-        document.getElementById("second-seconds").innerText = `${secondsSecondLife} Segundos`;
-
-        // Atualizar "Dias Juntos!" com o número de dias de "Na Outra Vida"
-        document.getElementById("days-together-second").innerText = `${daysSecondLife} Dias Juntos!`;
-    }
-
-    const audioElement = document.getElementById('background-music');
-    const playButton = document.getElementById('playButton');
-    playButton.addEventListener('click', () => {
-        if (audioElement.paused) {
-            audioElement.currentTime = 4;
-            audioElement.play();
-            playButton.innerText = "Pausar Música";
-        } else {
-            audioElement.pause();
-            playButton.innerText = "Tocar Música";
-        }
-    });
-
-    const videoSources = ["suh1.mp4", "suh2.mp4", "suh3.mp4", "suh4.mp4", "suh5.mp4", "suh6.mp4", "suh7.mp4"];
-    let playedVideos = [];
-
-    function playNextVideo() {
-        let nextVideo;
-
-        if (playedVideos.length === 0) {
-            nextVideo = "suh1.mp4"; // Primeiro vídeo obrigatório
-        } else if (playedVideos.length === videoSources.length) {
-            playedVideos = [];
-            nextVideo = videoSources[Math.floor(Math.random() * videoSources.length)];
-        } else {
-            do {
-                nextVideo = videoSources[Math.floor(Math.random() * videoSources.length)];
-            } while (playedVideos.includes(nextVideo));
+        // Função para pré-carregar todos os vídeos
+        function preloadVideos() {
+            videoSources.forEach(src => {
+                const video = document.createElement('video');
+                video.src = src;
+                video.preload = 'auto'; // Precarrega o vídeo
+            });
         }
 
-        playedVideos.push(nextVideo);
+        function playNextVideo() {
+            let nextVideo;
 
-        const videoElement = document.getElementById('video-source');
-        videoElement.src = nextVideo;
+            // Escolher um vídeo aleatório, exceto o último vídeo já tocado
+            nextVideo = videoSources.filter(video => !playedVideos.includes(video))[Math.floor(Math.random() * (videoSources.length - playedVideos.length))];
 
-        const videoBg = document.getElementById('video-bg');
-        videoBg.load();
-        videoBg.play();
-    }
+            playedVideos.push(nextVideo);
 
-    // Evento para reproduzir o próximo vídeo ao término do atual
-    const videoElement = document.getElementById('video-bg');
-    videoElement.addEventListener('ended', playNextVideo);
+            const videoElement = document.getElementById('video-source');
+            videoElement.src = nextVideo;
 
-    // Inicializar o primeiro vídeo
-    playNextVideo();
+            const videoBg = document.getElementById('video-bg');
+            videoBg.style.opacity = 0;
+            setTimeout(() => {
+                videoBg.load();
+                videoBg.play();
+                videoBg.style.opacity = 1;
+            }, 300);  // Tempo para transição suave (0.3 segundos)
+        }
 
-    // Atualizar o contador e a data continuamente
-    setInterval(() => {
-        updateDate();
-        updateCounter();
-    }, 1000);
-</script>
+        const videoElement = document.getElementById('video-bg');
+        videoElement.addEventListener('ended', playNextVideo);
 
+        preloadVideos(); // Pré-carrega os vídeos
+
+        // Começar com o suh1.mp4
+        const videoElement1 = document.getElementById('video-source');
+        videoElement1.src = "suh1.mp4";
+        videoElement.load();
+        videoElement.play();
+
+        function updateDate() {
+            const currentDate = new Date();
+            const formattedDate = currentDate.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('current-date').innerText = formattedDate;
+        }
+
+        function updateCounter() {
+            const now = new Date().getTime();
+
+            const firstLifeTime = now - startDateFirstLife;
+            const firstDays = Math.floor(firstLifeTime / (1000 * 60 * 60 * 24));
+            document.getElementById('first-days').innerText = `${firstDays} Dias`;
+
+            const secondLifeTime = now - startDateSecondLife;
+            const secondDays = Math.floor(secondLifeTime / (1000 * 60 * 60 * 24));
+            document.getElementById('second-days').innerText = `${secondDays} Dias`;
+
+            daysTogetherSecond.innerText = `${secondDays} Dias Juntos`;
+        }
+
+        setInterval(updateDate, 1000);
+        setInterval(updateCounter, 1000);
+
+        let hideTimeout;
+        let timerCount = 10;
+
+        function startHideTimer() {
+            hideTimeout = setInterval(() => {
+                timerCount--;
+                timerDisplay.innerText = timerCount;
+
+                if (timerCount === 0) {
+                    clearInterval(hideTimeout);
+                    content.style.display = 'none';
+                    tapMessage.classList.add('show');
+                }
+            }, 1000);
+        }
+
+        function resetHideTimer() {
+            clearInterval(hideTimeout);
+            timerCount = 10;
+            timerDisplay.innerText = timerCount;
+            content.style.display = 'block';
+            tapMessage.classList.remove('show');
+            startHideTimer();
+        }
+
+        // Manipulador de play/pause apenas para áudio
+        playButton.addEventListener('click', function() {
+            if (audioElement.paused) {
+                audioElement.currentTime = 4.5;
+                audioElement.play();
+                buttonLabel.innerText = "Pausar Música";
+            } else {
+                audioElement.pause();
+                buttonLabel.innerText = "Tocar Música";
+            }
+        });
+
+        document.body.addEventListener('click', resetHideTimer);
+
+        startHideTimer();
+    </script>
 </body>
 </html>

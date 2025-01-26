@@ -26,8 +26,8 @@
             height: 100%;
             object-fit: cover;
             z-index: -1;
-            pointer-events: none;
-            transition: opacity 0.3s ease-in-out; /* Transição mais rápida */
+            pointer-events: auto;
+            transition: opacity 0.3s ease-in-out;
         }
 
         .content {
@@ -178,13 +178,12 @@
             font-weight: bold;
         }
 
-        /* Mensagem "Toque na tela" */
         .tap-message {
             display: none;
             font-size: 1.2rem;
             color: white;
             position: absolute;
-            top: -50px; /* Acima do botão */
+            top: -50px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
@@ -196,7 +195,6 @@
             display: block;
         }
 
-        /* Fase oculta */
         .hidden-content {
             display: none;
         }
@@ -246,8 +244,8 @@
     </div>
 
     <script>
-        const videoSources = ["suh1.mp4", "suh2.mp4", "suh3.mp4", "suh4.mp4", "suh5.mp4", "suh6.mp4", "suh7.mp4"];
-        let playedVideos = [];
+        const videoSources = ["suh1.mp4", "suh2.mp4", "suh3.mp4", "suh5.mp4", "suh6.mp4", "suh7.mp4", "suh8.mp4"];
+        let playedVideos = ["suh1.mp4"]; // Começa com o suh1.mp4
 
         const audioElement = document.getElementById('background-music');
         const playButton = document.getElementById('playButton');
@@ -274,11 +272,8 @@
         function playNextVideo() {
             let nextVideo;
 
-            if (playedVideos.length === 0) {
-                nextVideo = "suh1.mp4";
-            } else {
-                nextVideo = videoSources.filter(video => !playedVideos.includes(video))[Math.floor(Math.random() * (videoSources.length - playedVideos.length))];
-            }
+            // Escolher um vídeo aleatório, exceto o último vídeo já tocado
+            nextVideo = videoSources.filter(video => !playedVideos.includes(video))[Math.floor(Math.random() * (videoSources.length - playedVideos.length))];
 
             playedVideos.push(nextVideo);
 
@@ -299,7 +294,11 @@
 
         preloadVideos(); // Pré-carrega os vídeos
 
-        playNextVideo();
+        // Começar com o suh1.mp4
+        const videoElement1 = document.getElementById('video-source');
+        videoElement1.src = "suh1.mp4";
+        videoElement.load();
+        videoElement.play();
 
         function updateDate() {
             const currentDate = new Date();
@@ -349,6 +348,7 @@
             startHideTimer();
         }
 
+        // Manipulador de play/pause apenas para áudio
         playButton.addEventListener('click', function() {
             if (audioElement.paused) {
                 audioElement.currentTime = 4.5;
@@ -358,10 +358,19 @@
                 audioElement.pause();
                 buttonLabel.innerText = "Tocar Música";
             }
-            resetHideTimer();
         });
 
-        document.body.addEventListener('click', resetHideTimer);
+        // Reativar o layout apenas ao clicar no vídeo
+        document.getElementById('video-bg').addEventListener('click', function() {
+            resetHideTimer();  // Reativa o layout
+        });
+
+        // O evento de click no body não faz mais reset no layout
+        document.body.addEventListener('click', function(e) {
+            if (!e.target.closest('#playButton')) { // Ignora o botão play
+                resetHideTimer();
+            }
+        });
 
         startHideTimer();
     </script>
