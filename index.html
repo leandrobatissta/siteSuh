@@ -295,7 +295,7 @@
         <h2>Suh & Lele</h2>
 
         <div class="top-section">
-            <h1 style="color: yellow;" id="days-together-second">0 Dias Juntos</h1>
+            <h1 style="color: yellow;" id="days-together-second">Dias Juntos</h1>
         </div>
 
         <p id="current-date"></p>
@@ -549,35 +549,6 @@ document.querySelector('.falling-heart').addEventListener('click', function() {
         videoElement.muted = true;  // Volta o vídeo para mudo
     });
 });
-
-// Função para exibir o coração com 20% de chance
-function showHeartRandomly() {
-    const chance = Math.random(); // Gera um número aleatório entre 0 e 1
-    if (chance <= 0.2) { // 20% de chance
-        const heart = document.createElement('div');
-        heart.classList.add('falling-heart');
-        heart.innerHTML = '❤️'; // O emoji de coração
-        document.body.appendChild(heart);
-
-        // Faz o coração aparecer com a animação
-        heart.style.display = 'block';
-
-        // Configura o coração para ser removido depois da animação
-        setTimeout(() => {
-            heart.remove();
-        }, 12000); // Remove após 12 segundos (duração da animação)
-    }
-}
-
-// Chama a função a cada 15 segundos
-setInterval(showHeartRandomly, 15000);
-
-
-
-
-
-
-
 
 
 </script>
