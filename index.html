@@ -348,16 +348,25 @@
             startHideTimer();
         }
 
-        // Manipulador de play/pause apenas para áudio
+        // Manipulador de play/pause para o áudio
         playButton.addEventListener('click', function() {
             if (audioElement.paused) {
-                audioElement.currentTime = 4.5;
+                // Se a música estiver pausada, retome de onde parou
                 audioElement.play();
                 buttonLabel.innerText = "Pausar Música";
             } else {
+                // Se a música estiver tocando, pause
                 audioElement.pause();
                 buttonLabel.innerText = "Tocar Música";
             }
+        });
+
+        // Reiniciar a música quando terminar
+        audioElement.addEventListener('ended', function() {
+            // Quando a música terminar, reinicia a partir do começo
+            audioElement.currentTime = 0;
+            audioElement.play();
+            buttonLabel.innerText = "Pausar Música";
         });
 
         // Reativar o layout apenas ao clicar no vídeo
