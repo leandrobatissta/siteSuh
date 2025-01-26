@@ -270,24 +270,31 @@
         }
 
         function playNextVideo() {
-            let nextVideo;
+    // Redefine a lista de vídeos já reproduzidos quando todos forem executados
+    if (playedVideos.length === videoSources.length) {
+        playedVideos = [];
+    }
 
-            // Escolher um vídeo aleatório, exceto o último vídeo já tocado
-            nextVideo = videoSources.filter(video => !playedVideos.includes(video))[Math.floor(Math.random() * (videoSources.length - playedVideos.length))];
+    // Seleciona um vídeo aleatório que ainda não foi reproduzido
+    const remainingVideos = videoSources.filter(video => !playedVideos.includes(video));
+    const nextVideo = remainingVideos[Math.floor(Math.random() * remainingVideos.length)];
 
-            playedVideos.push(nextVideo);
+    // Adiciona o vídeo atual à lista de reproduzidos
+    playedVideos.push(nextVideo);
 
-            const videoElement = document.getElementById('video-source');
-            videoElement.src = nextVideo;
+    // Atualiza o vídeo no elemento HTML
+    const videoElement = document.getElementById('video-source');
+    videoElement.src = nextVideo;
 
-            const videoBg = document.getElementById('video-bg');
-            videoBg.style.opacity = 0;
-            setTimeout(() => {
-                videoBg.load();
-                videoBg.play();
-                videoBg.style.opacity = 1;
-            }, 300);  // Tempo para transição suave (0.3 segundos)
-        }
+    const videoBg = document.getElementById('video-bg');
+    videoBg.style.opacity = 0; // Transição suave
+    setTimeout(() => {
+        videoBg.load(); // Recarrega o vídeo
+        videoBg.play(); // Inicia o vídeo
+        videoBg.style.opacity = 1; // Transição suave
+    }, 300); // Tempo da transição (0.3 segundos)
+}
+
 
         const videoElement = document.getElementById('video-bg');
         videoElement.addEventListener('ended', playNextVideo);
