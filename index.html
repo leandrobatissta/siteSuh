@@ -671,7 +671,7 @@ function playVideoAtSpecificTime() {
         // Criar e configurar o vídeo
         const videoElement = document.createElement('video');
         videoElement.src = 'lele2.mp4';
-        videoElement.autoplay = true;
+        videoElement.autoplay = true; // Ativa o autoplay
         videoElement.style.position = 'fixed';
         videoElement.style.top = '0';
         videoElement.style.left = '0';
@@ -679,7 +679,7 @@ function playVideoAtSpecificTime() {
         videoElement.style.height = '100%';
         videoElement.style.zIndex = '9999';
         videoElement.style.backgroundColor = 'black'; // Fundo para evitar bordas
-        videoElement.muted = false; // Ativa som
+        videoElement.muted = false; // O som está ativado desde o início
         videoElement.playsInline = true; // Para melhor suporte em dispositivos móveis
 
         // Remove controles do vídeo
@@ -687,6 +687,11 @@ function playVideoAtSpecificTime() {
 
         // Adiciona o vídeo ao corpo do documento
         document.body.appendChild(videoElement);
+
+        // Tentar reproduzir o vídeo imediatamente
+        videoElement.play().catch(error => {
+          console.log("Erro ao tentar reproduzir o vídeo:", error);
+        });
 
         // Fechar o vídeo ao terminar
         videoElement.addEventListener('ended', () => {
