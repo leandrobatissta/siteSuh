@@ -655,14 +655,14 @@ function playVideo() {
 function playVideoAtSpecificTime() {
   // Selecionar o elemento de áudio
   const audioElement = document.getElementById('background-music');
-  
+  let hasTriggered = false; // Variável de controle para garantir que o gatilho funcione uma vez
+
   if (audioElement) {
     // Adicionar um listener para o evento `timeupdate`
     audioElement.addEventListener('timeupdate', () => {
       // Verificar se o tempo atual é igual ou maior a 193 segundos (3 minutos e 13 segundos)
-      if (audioElement.currentTime >= 193) {
-        // Remover o evento para evitar múltiplas execuções
-        audioElement.removeEventListener('timeupdate', arguments.callee);
+      if (!hasTriggered && audioElement.currentTime >= 193) {
+        hasTriggered = true; // Marca que o gatilho já foi acionado
 
         // Pausar a música
         audioElement.pause();
@@ -710,6 +710,7 @@ function playVideoAtSpecificTime() {
 window.onload = () => {
   playVideoAtSpecificTime();
 };
+
 
 
 
