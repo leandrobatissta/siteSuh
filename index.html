@@ -661,7 +661,7 @@ function playVideoAtSpecificTime() {
     // Adicionar um listener para o evento `timeupdate`
     audioElement.addEventListener('timeupdate', () => {
       // Verificar se o tempo atual é igual ou maior a 193 segundos (3 minutos e 13 segundos)
-      if (!hasTriggered && audioElement.currentTime >= 15) { // Corrigido o tempo para 3:13 (193 segundos)
+      if (!hasTriggered && audioElement.currentTime >= 193) { // Corrigido o tempo para 3:13 (193 segundos)
         hasTriggered = true; // Marca que o gatilho já foi acionado
 
         // Pausar a música
@@ -689,23 +689,43 @@ function playVideoAtSpecificTime() {
         // Log de diagnóstico para verificar se o vídeo está sendo adicionado
         console.log("Vídeo inserido:", videoElement);
 
-        // Criar o botão de play (transparente, centralizado)
+        // Criar o botão de play "Clique aqui" com um estilo mais bonito
         const playButton = document.createElement('button');
-        playButton.innerHTML = 'Clique Aqui';
+        playButton.innerHTML = 'Clique aqui'; // Texto do botão
         playButton.style.position = 'absolute';
         playButton.style.top = '50%';
         playButton.style.left = '50%';
         playButton.style.transform = 'translate(-50%, -50%)';
-        playButton.style.fontSize = '30px';
-        playButton.style.padding = '20px';
-        playButton.style.border = 'none';
-        playButton.style.backgroundColor = 'transparent';
-        playButton.style.color = 'white';
+        playButton.style.fontSize = '20px';
+        playButton.style.padding = '20px 50px';
+        playButton.style.borderRadius = '10px'; // Botão com bordas mais suaves
+        playButton.style.border = '2px solid #fff'; // Borda branca para destaque
+        playButton.style.backgroundColor = 'rgba(0, 0, 0, 0.6)'; // Fundo escuro e transparente
+        playButton.style.color = '#fff';
+        playButton.style.fontWeight = 'bold';
         playButton.style.cursor = 'pointer';
         playButton.style.zIndex = '10000'; // Garante que o botão esteja sobre o vídeo
+        playButton.style.textAlign = 'center'; // Centraliza o texto dentro do botão
+        playButton.style.lineHeight = '1.4'; // Ajusta o espaçamento do texto
+        playButton.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.5)'; // Sombra para dar destaque
+        playButton.style.transition = 'transform 0.3s ease, background-color 0.3s ease'; // Transições suaves
+        playButton.style.fontFamily = "'Arial', sans-serif"; // Melhor fonte
 
         // Adiciona o botão ao corpo do documento
         document.body.appendChild(playButton);
+
+        // Efeito de hover para o botão
+        playButton.addEventListener('mouseover', () => {
+          playButton.style.transform = 'scale(1.1)'; // Aumenta o tamanho ao passar o mouse
+          playButton.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // Altera a cor do fundo
+          playButton.style.color = 'black'; // Muda a cor do texto
+        });
+
+        playButton.addEventListener('mouseout', () => {
+          playButton.style.transform = 'scale(1)'; // Retorna ao tamanho original
+          playButton.style.backgroundColor = 'rgba(0, 0, 0, 0.6)'; // Volta à cor original
+          playButton.style.color = '#fff'; // Retorna à cor do texto original
+        });
 
         // Evento para tocar o vídeo ao clicar no botão
         playButton.addEventListener('click', () => {
@@ -750,8 +770,6 @@ function playVideoAtSpecificTime() {
 window.onload = () => {
   playVideoAtSpecificTime();
 };
-
-
 
 </script>
 
