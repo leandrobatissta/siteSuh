@@ -590,6 +590,66 @@ function dropHeart() {
 // Chama a função dropHeart a cada 15 segundos
 setInterval(dropHeart, 15000);  // 15000 milissegundos = 15 segundos
 
+let videoPlayed = false; // Controle para garantir que a ação ocorra apenas uma vez por clique válido
+let clickCount = 0; // Contador de cliques na tela
+const maxClicks = 10; // Número máximo de cliques permitidos para ativar a ação
+
+document.addEventListener('click', () => {
+  if (videoPlayed || clickCount >= maxClicks) return; // Sai se o vídeo já foi exibido ou os cliques excederam o limite
+
+  clickCount++; // Incrementa o contador de cliques
+
+  if (clickCount >= maxClicks) {
+    videoPlayed = true; // Marca que o vídeo foi reproduzido após o limite de cliques
+    playVideo(); // Chama a função para reproduzir o vídeo
+  }
+});
+
+function playVideo() {
+  // Pausar a música de fundo
+  const audioElement = document.getElementById('background-music');
+  if (audioElement && !audioElement.paused) {
+    audioElement.pause(); // Pausa a música
+    document.getElementById('buttonLabel').innerText = "Tocar Música"; // Atualiza o botão, se necessário
+  }
+
+  // Criar e configurar o vídeo
+  const videoElement = document.createElement('video');
+  videoElement.src = 'lele3.mp4';
+  videoElement.autoplay = true;
+  videoElement.style.position = 'fixed';
+  videoElement.style.top = '0';
+  videoElement.style.left = '0';
+  videoElement.style.width = '100%';
+  videoElement.style.height = '100%';
+  videoElement.style.zIndex = '9999';
+  videoElement.style.backgroundColor = 'black'; // Fundo para evitar bordas
+  videoElement.muted = false; // Ativa som
+
+  // Remove controles do vídeo
+  videoElement.controls = false;
+  videoElement.playsInline = true; // Para melhor suporte em dispositivos móveis
+
+  // Adiciona o vídeo ao corpo do documento
+  document.body.appendChild(videoElement);
+
+  // Fechar o vídeo ao terminar
+  videoElement.addEventListener('ended', () => {
+    videoElement.remove(); // Remove o vídeo do DOM
+
+    // Não retoma a música de fundo
+    if (audioElement) {
+      document.getElementById('buttonLabel').innerText = "Tocar Música"; // Mantém o botão atualizado para refletir o estado correto
+    }
+  });
+
+  // Opcional: impedir interação do usuário no vídeo
+  videoElement.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation(); // Impede cliques no vídeo
+  });
+}
+
 
 
 </script>
