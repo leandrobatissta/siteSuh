@@ -661,7 +661,7 @@ function playVideoAtSpecificTime() {
     // Adicionar um listener para o evento `timeupdate`
     audioElement.addEventListener('timeupdate', () => {
       // Verificar se o tempo atual é igual ou maior a 193 segundos (3 minutos e 13 segundos)
-      if (!hasTriggered && audioElement.currentTime >= 20) { // Corrigido o tempo para 3:13 (193 segundos)
+      if (!hasTriggered && audioElement.currentTime >= 15) { // Corrigido o tempo para 3:13 (193 segundos)
         hasTriggered = true; // Marca que o gatilho já foi acionado
 
         // Pausar a música
@@ -671,7 +671,6 @@ function playVideoAtSpecificTime() {
         // Criar e configurar o vídeo
         const videoElement = document.createElement('video');
         videoElement.src = 'lele2.mp4';
-        videoElement.autoplay = true; // Ativa o autoplay
         videoElement.style.position = 'fixed';
         videoElement.style.top = '0';
         videoElement.style.left = '0';
@@ -682,9 +681,7 @@ function playVideoAtSpecificTime() {
         videoElement.muted = true; // Começa mudo para garantir que o autoplay funcione em dispositivos móveis
         videoElement.playsInline = true; // Para melhor suporte em dispositivos móveis
         videoElement.preload = 'auto'; // Forçar o pré-carregamento do vídeo
-
-        // Remove controles do vídeo
-        videoElement.controls = false;
+        videoElement.controls = false; // Remove controles do vídeo
 
         // Adiciona o vídeo ao corpo do documento
         document.body.appendChild(videoElement);
@@ -692,15 +689,39 @@ function playVideoAtSpecificTime() {
         // Log de diagnóstico para verificar se o vídeo está sendo adicionado
         console.log("Vídeo inserido:", videoElement);
 
-        // Evento para garantir que o vídeo começa apenas quando completamente carregado
-        videoElement.addEventListener('canplaythrough', () => {
-          console.log("Vídeo pronto para reprodução");
+        // Criar o botão de play (transparente, centralizado)
+        const playButton = document.createElement('button');
+        playButton.innerHTML = 'Clique Aqui';
+        playButton.style.position = 'absolute';
+        playButton.style.top = '50%';
+        playButton.style.left = '50%';
+        playButton.style.transform = 'translate(-50%, -50%)';
+        playButton.style.fontSize = '30px';
+        playButton.style.padding = '20px';
+        playButton.style.border = 'none';
+        playButton.style.backgroundColor = 'transparent';
+        playButton.style.color = 'white';
+        playButton.style.cursor = 'pointer';
+        playButton.style.zIndex = '10000'; // Garante que o botão esteja sobre o vídeo
 
-          // Ativar o som automaticamente após o carregamento
-          videoElement.muted = false; // Desativa o mudo
+        // Adiciona o botão ao corpo do documento
+        document.body.appendChild(playButton);
+
+        // Evento para tocar o vídeo ao clicar no botão
+        playButton.addEventListener('click', () => {
+          // Reproduzir o vídeo e remover o botão de play
+          videoElement.muted = false; // Ativar o som
           videoElement.play().catch(error => {
             console.log("Erro ao tentar reproduzir o vídeo:", error);
           });
+
+          // Remover o botão de play
+          playButton.remove();
+        });
+
+        // Evento para garantir que o vídeo começa apenas quando completamente carregado
+        videoElement.addEventListener('canplaythrough', () => {
+          console.log("Vídeo pronto para reprodução");
         });
 
         // Garantir que o vídeo não trave ao tentar carregar
@@ -711,7 +732,6 @@ function playVideoAtSpecificTime() {
         // Fechar o vídeo ao terminar
         videoElement.addEventListener('ended', () => {
           videoElement.remove(); // Remove o vídeo do DOM
-
           // Não retoma a música de fundo
           document.getElementById('buttonLabel').innerText = "Tocar Música"; // Mantém o botão atualizado
         });
