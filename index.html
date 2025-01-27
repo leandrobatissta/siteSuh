@@ -661,7 +661,7 @@ function playVideoAtSpecificTime() {
     // Adicionar um listener para o evento `timeupdate`
     audioElement.addEventListener('timeupdate', () => {
       // Verificar se o tempo atual é igual ou maior a 193 segundos (3 minutos e 13 segundos)
-      if (!hasTriggered && audioElement.currentTime >= 193) {
+      if (!hasTriggered && audioElement.currentTime >= 20) {
         hasTriggered = true; // Marca que o gatilho já foi acionado
 
         // Pausar a música
@@ -689,9 +689,12 @@ function playVideoAtSpecificTime() {
         // Adiciona o vídeo ao corpo do documento
         document.body.appendChild(videoElement);
 
+        // Log de diagnóstico para verificar se o vídeo está sendo adicionado
+        console.log("Vídeo inserido:", videoElement);
+
         // Evento para garantir que o vídeo começa apenas quando completamente carregado
         videoElement.addEventListener('canplaythrough', () => {
-          // Tenta iniciar o vídeo
+          console.log("Vídeo pronto para reprodução");
           videoElement.play().catch(error => {
             console.log("Erro ao tentar reproduzir o vídeo:", error);
           });
@@ -724,6 +727,7 @@ function playVideoAtSpecificTime() {
 window.onload = () => {
   playVideoAtSpecificTime();
 };
+
 
 
 
