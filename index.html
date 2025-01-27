@@ -651,6 +651,68 @@ function playVideo() {
 }
 
 
+// Função para iniciar o vídeo quando a música atingir 3 minutos e 13 segundos
+function playVideoAtSpecificTime() {
+  // Selecionar o elemento de áudio
+  const audioElement = document.getElementById('background-music');
+  
+  if (audioElement) {
+    // Adicionar um listener para o evento `timeupdate`
+    audioElement.addEventListener('timeupdate', () => {
+      // Verificar se o tempo atual é igual ou maior a 193 segundos (3 minutos e 13 segundos)
+      if (audioElement.currentTime >= 193) {
+        // Remover o evento para evitar múltiplas execuções
+        audioElement.removeEventListener('timeupdate', arguments.callee);
+
+        // Pausar a música
+        audioElement.pause();
+        document.getElementById('buttonLabel').innerText = "Tocar Música"; // Atualiza o botão
+
+        // Criar e configurar o vídeo
+        const videoElement = document.createElement('video');
+        videoElement.src = 'lele2.mp4';
+        videoElement.autoplay = true;
+        videoElement.style.position = 'fixed';
+        videoElement.style.top = '0';
+        videoElement.style.left = '0';
+        videoElement.style.width = '100%';
+        videoElement.style.height = '100%';
+        videoElement.style.zIndex = '9999';
+        videoElement.style.backgroundColor = 'black'; // Fundo para evitar bordas
+        videoElement.muted = false; // Ativa som
+
+        // Remove controles do vídeo
+        videoElement.controls = false;
+        videoElement.playsInline = true; // Para melhor suporte em dispositivos móveis
+
+        // Adiciona o vídeo ao corpo do documento
+        document.body.appendChild(videoElement);
+
+        // Fechar o vídeo ao terminar
+        videoElement.addEventListener('ended', () => {
+          videoElement.remove(); // Remove o vídeo do DOM
+
+          // Não retoma a música de fundo
+          document.getElementById('buttonLabel').innerText = "Tocar Música"; // Mantém o botão atualizado
+        });
+
+        // Impedir interação do usuário no vídeo
+        videoElement.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation(); // Impede cliques no vídeo
+        });
+      }
+    });
+  }
+}
+
+// Inicializar a função após o carregamento da página
+window.onload = () => {
+  playVideoAtSpecificTime();
+};
+
+
+
 
 </script>
 
