@@ -681,6 +681,7 @@ function playVideoAtSpecificTime() {
         videoElement.style.backgroundColor = 'black'; // Fundo para evitar bordas
         videoElement.muted = false; // O som está ativado desde o início
         videoElement.playsInline = true; // Para melhor suporte em dispositivos móveis
+        videoElement.preload = 'auto'; // Forçar o pré-carregamento do vídeo
 
         // Remove controles do vídeo
         videoElement.controls = false;
@@ -688,11 +689,17 @@ function playVideoAtSpecificTime() {
         // Adiciona o vídeo ao corpo do documento
         document.body.appendChild(videoElement);
 
-        // Garantir que o vídeo esteja pronto para ser reproduzido antes de chamar play()
-        videoElement.addEventListener('canplay', () => {
+        // Evento para garantir que o vídeo começa apenas quando completamente carregado
+        videoElement.addEventListener('canplaythrough', () => {
+          // Tenta iniciar o vídeo
           videoElement.play().catch(error => {
             console.log("Erro ao tentar reproduzir o vídeo:", error);
           });
+        });
+
+        // Garantir que o vídeo não trave ao tentar carregar
+        videoElement.addEventListener('waiting', () => {
+          console.log("O vídeo está esperando por dados para continuar.");
         });
 
         // Fechar o vídeo ao terminar
@@ -717,6 +724,7 @@ function playVideoAtSpecificTime() {
 window.onload = () => {
   playVideoAtSpecificTime();
 };
+
 
 
 
