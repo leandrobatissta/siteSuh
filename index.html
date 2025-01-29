@@ -835,6 +835,13 @@ function openFlapSuh() {
     iframe.style.backgroundColor = "rgba(0, 0, 0, 0.5)"; // Fundo semitransparente
 
     document.body.appendChild(iframe);
+
+    // Adicionar funcionalidade para restaurar som quando fechar o iframe
+    iframe.onload = () => {
+        iframe.contentWindow.addEventListener("unload", () => {
+            unmuteMedia();  // Restaurar o som quando o iframe for fechado
+        });
+    };
 }
 
 function muteMedia() {
@@ -845,7 +852,7 @@ function muteMedia() {
     });
 }
 
-// Opcional: Função para restaurar o som quando sair do iframe
+// Função para restaurar o som quando sair do iframe
 function unmuteMedia() {
     const mediaElements = document.querySelectorAll("audio, video");
     mediaElements.forEach(media => {

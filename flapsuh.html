@@ -160,29 +160,27 @@
 
     let pipeSpacing = 350;  // Distância inicial entre os obstáculos
 
-function updatePipes() {
-    let gap;
-    if (obstacleCount < 5) {
-        gap = 240;
-    } else if (obstacleCount < 10) {
-        gap = 200;
+    function updatePipes() {
+        let gap;
+        if (obstacleCount < 5) {
+            gap = 240;
+        } else if (obstacleCount < 10) {
+            gap = 200;
+        } else if (obstacleCount < 15) {
+            gap = 180;
+        } else {
+            gap = 160;
+        }
 
-    } else if (obstacleCount < 15) {
-        gap = 180;    
-    
-    } else {
-        gap = 160;
+        if (frame % 90 === 0) {
+            let top = Math.random() * (canvas.height / 2);
+            // Usando a variável pipeSpacing para afastar os obstáculos horizontalmente
+            pipes.push({ x: pipes.length > 0 ? pipes[pipes.length - 1].x + pipeSpacing : canvas.width, width: 40, top: top, bottom: canvas.height - top - gap });
+            obstacleCount++;
+        }
+        pipes.forEach(pipe => pipe.x -= 1.5); // Diminui a velocidade dos obstáculos (anteriormente era 3)
+        pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
     }
-
-    if (frame % 90 === 0) {
-        let top = Math.random() * (canvas.height / 2);
-        // Usando a variável pipeSpacing para afastar os obstáculos horizontalmente
-        pipes.push({ x: pipes.length > 0 ? pipes[pipes.length - 1].x + pipeSpacing : canvas.width, width: 40, top: top, bottom: canvas.height - top - gap });
-        obstacleCount++;
-    }
-    pipes.forEach(pipe => pipe.x -= 1.5); // Diminui a velocidade dos obstáculos (anteriormente era 3)
-    pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
-}
 
     function checkCollision() {
         pipes.forEach(pipe => {
@@ -282,8 +280,21 @@ function updatePipes() {
     }
 
     function handleQuit() {
-        console.log("Jogo finalizado");
+    console.log("Jogo finalizado");
+
+    // Verifica se existe a janela que abriu esta janela (window.opener)
+    if (window.opener && !window.opener.closed) {
+        // Retorna o foco para a página anterior
+        window.opener.focus();
+        window.close(); // Tenta fechar a janela do jogo
+    } else if (window.close) {
+        // Se a janela foi aberta com window.open(), tente fechá-la diretamente
+        window.close();
+    } else {
+        alert('Não foi possível fechar a janela. Certifique-se de que o jogo foi aberto usando window.open().');
     }
+}
+
 
     continueButton.addEventListener("click", handleContinue);
     quitButton.addEventListener("click", handleQuit);
@@ -293,7 +304,5 @@ function updatePipes() {
 
     resetGame();
 </script>
-
-
 </body>
 </html>
