@@ -800,10 +800,16 @@ window.addEventListener("load", () => {
         }
     }
 
-    // Aparecer uma vez na carga da página com altura aleatória
-    iconImage.style.bottom = `${getRandomY()}%`;  // Define a altura aleatória inicial
-    iconImage.style.opacity = 0.7;  // 70% de opacidade
-    iconImage.style.animationPlayState = 'running';  // Inicia a animação
+    // A imagem começa invisível e sem animação, sem afetar o layout da página
+    iconImage.style.opacity = 0;
+    iconImage.style.animationPlayState = 'paused';
+    
+    // A imagem será posicionada fora do fluxo normal, para não interferir em nada
+    iconImage.style.position = 'fixed'; // Usamos fixed para garantir que não interfira no layout
+    iconImage.style.zIndex = '100'; // Garantir que a imagem fique acima de outros elementos
+
+    // Chama a função de verificação pela primeira vez com base na probabilidade
+    setTimeout(checkForAppearance, 0);  // Inicia logo após o carregamento, com a verificação da probabilidade
 
     // Chama a função de verificação a cada 20 segundos
     setInterval(checkForAppearance, 20000);  // 20000ms = 20 segundos
@@ -831,7 +837,6 @@ function openFlapSuh() {
     document.body.appendChild(iframe);
 }
 
-
 function muteMedia() {
     // Muda o volume de todos os elementos de áudio e vídeo para 0 (silenciar)
     const mediaElements = document.querySelectorAll("audio, video");
@@ -847,6 +852,7 @@ function unmuteMedia() {
         media.muted = false;
     });
 }
+
 
 
 
