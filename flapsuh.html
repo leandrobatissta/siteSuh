@@ -158,24 +158,31 @@
         }
     }
 
-    function updatePipes() {
-        let gap;
-        if (obstacleCount < 10) {
-            gap = 240;
-        } else if (obstacleCount < 15) {
-            gap = 200;
-        } else {
-            gap = 180;
-        }
+    let pipeSpacing = 350;  // Distância inicial entre os obstáculos
 
-        if (frame % 90 === 0) {
-            let top = Math.random() * (canvas.height / 2);
-            pipes.push({ x: canvas.width, width: 40, top: top, bottom: canvas.height - top - gap });
-            obstacleCount++;
-        }
-        pipes.forEach(pipe => pipe.x -= 2);
-        pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
+function updatePipes() {
+    let gap;
+    if (obstacleCount < 5) {
+        gap = 240;
+    } else if (obstacleCount < 10) {
+        gap = 200;
+
+    } else if (obstacleCount < 15) {
+        gap = 180;    
+    
+    } else {
+        gap = 160;
     }
+
+    if (frame % 90 === 0) {
+        let top = Math.random() * (canvas.height / 2);
+        // Usando a variável pipeSpacing para afastar os obstáculos horizontalmente
+        pipes.push({ x: pipes.length > 0 ? pipes[pipes.length - 1].x + pipeSpacing : canvas.width, width: 40, top: top, bottom: canvas.height - top - gap });
+        obstacleCount++;
+    }
+    pipes.forEach(pipe => pipe.x -= 1.5); // Diminui a velocidade dos obstáculos (anteriormente era 3)
+    pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
+}
 
     function checkCollision() {
         pipes.forEach(pipe => {
