@@ -8,7 +8,6 @@
         body {
             margin: 0;
             overflow: hidden;
-            background: black;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -21,24 +20,35 @@
         }
         #message, #instructions {
             position: absolute;
-            font-size: 28px; /* Tamanho da fonte igual ao de "Você perdeu!" */
+            font-size: 28px;
             text-align: center;
             color: black;
             width: 100%;
         }
         #message {
-            top: 50%; /* Centraliza verticalmente a mensagem "Você perdeu!" */
-            transform: translateY(-50%); /* Ajuste para garantir o centro exato */
+            top: 50%;
+            transform: translateY(-50%);
         }
         #instructions {
-            top: 50%; /* Centraliza verticalmente a mensagem "Toque para iniciar!" */
-            transform: translateY(-50%); /* Ajuste para garantir o centro exato */
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #buttons {
+            position: absolute;
+            top: 95%;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        #buttons div {
+            margin: 0 30px;
+            font-size: 20px;
+            cursor: pointer;
         }
 
-        /* Ajuste de tamanho da instrução para dispositivos móveis */
         @media (max-width: 480px) {
             #instructions {
-                font-size: 20px; /* Ajusta para ficar igual ao "Você perdeu!" */
+                font-size: 20px;
                 top: 50%;
                 transform: translateY(-50%);
             }
@@ -47,53 +57,89 @@
                 top: 50%;
                 transform: translateY(-50%);
             }
+            #buttons {
+                top: 95%;
+            }
         }
     </style>
 </head>
 <body>
     <div id="instructions">Toque para iniciar!</div>
-    <div id="message">Você perdeu!</div>
+    <div id="message">
+        Você perdeu!
+        <div id="buttons">
+            <div id="continue">Continuar</div>
+            <div id="quit">Desistir</div>
+        </div>
+    </div>
     <canvas id="gameCanvas"></canvas>
     <audio id="bgMusic" src="outravida.mp3" loop></audio>
-    <audio id="flapSound" src="flap-sound.mp3"></audio> <!-- Som de flap -->
+    <audio id="flapSound" src="flap-sound.mp3"></audio> <!-- Som do flap -->
+    <audio id="toySound" src="toy.mp3"></audio> <!-- Som do pássaro ao clicar -->
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
         const message = document.getElementById("message");
         const instructions = document.getElementById("instructions");
         const bgMusic = document.getElementById("bgMusic");
-        const flapSound = document.getElementById("flapSound");  // Som de flap
+        const flapSound = document.getElementById("flapSound");
+        const toySound = document.getElementById("toySound");
+        const continueButton = document.getElementById("continue");
+        const quitButton = document.getElementById("quit");
+        const birdImage = new Image();
+        birdImage.src = "iconsuh.png"; // Caminho para o arquivo do pássaro
         canvas.width = 320;
         canvas.height = 480;
 
-        let bird = { x: 50, y: 150, size: 20, velocity: 0, gravity: 0.5, lift: -10 };
+        let bird = { x: 50, y: 150, size: 40, velocity: 0, gravity: 0.5, lift: -10, rotation: 0, rotationDirection: 1 }; // rotationDirection: 1 (direita), -1 (esquerda)
         let pipes = [];
         let frame = 0;
         let gameOver = false;
         let gameStarted = false;
         let obstacleCount = 0;
-        let score = 20; // Contador de obstáculos começando em 20
+        let score = 20;
+        let gamePaused = false;
+        let backgroundColorIndex = 0; // Índice da cor de fundo
+
+        const backgroundColors = [
+            "white",        // Branco
+            "#87CEEB",      // Azul céu
+            "#FFFACD",      // Amarelo claro
+            "red"           // Vermelho
+        ];
 
         function resetGame() {
             bird.y = 150;
             bird.velocity = 0;
+            bird.rotation = 0;
+            bird.rotationDirection = 1; // Inicia com a rotação para a direita
             pipes = [];
             frame = 0;
             gameOver = false;
             obstacleCount = 0;
-            score = 20; // Reseta o contador para 20 ao reiniciar o jogo
-            message.style.display = "none";  // Esconde a frase "Você perdeu!" após o game over
-            instructions.style.display = "block";  // Exibe a frase "Toque para iniciar!"
-            bgMusic.currentTime = 0;  // Reseta a música de fundo
+            score = 20;
+            gamePaused = false;
+            message.style.display = "none";
+            instructions.style.display = "block";
+            bgMusic.currentTime = 0;
             bgMusic.pause();
-            bgMusic.volume = 0.2;  // Diminuir o volume do som de fundo
+            bgMusic.volume = 0.2; // Volume do bgMusic
+            backgroundColorIndex = 0; // Reseta o índice de cor de fundo
         }
 
         function drawBird() {
-            ctx.fillStyle = "black";
-            ctx.beginPath();
-            ctx.arc(bird.x, bird.y, bird.size, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.save();
+            ctx.translate(bird.x, bird.y);
+            ctx.rotate(bird.rotation * Math.PI / 180);
+
+            // Aplicando a transparência de 20% (80% de opacidade)
+            ctx.globalAlpha = 0.8;
+
+            ctx.drawImage(birdImage, -bird.size, -bird.size, bird.size * 2, bird.size * 2);
+            ctx.restore();
+
+            // Restaurando a opacidade para 100% após o desenho
+            ctx.globalAlpha = 1;
         }
 
         function drawPipes() {
@@ -106,32 +152,28 @@
 
         function drawScore() {
             ctx.fillStyle = "black";
-            ctx.font = "20px Arial";
-            ctx.fillText("Meta: " + score, 10, 30);  // Exibe o contador na borda esquerda
+            ctx.font = "40px Arial"; // Tamanho da fonte aumentado
+            ctx.fillText("Meta: " + score, 10, 60); // Posicionando o texto mais para cima
         }
 
         function updateBird() {
             bird.velocity += bird.gravity;
             bird.y += bird.velocity;
-            if (bird.y + bird.size > canvas.height || bird.y - bird.size < 0) {
+            if (bird.y + bird.size / 2 > canvas.height || bird.y - bird.size / 2 < 0) {
                 gameOver = true;
             }
         }
 
         function updatePipes() {
             let gap;
-
-            // Aumenta o espaço para os primeiros 10 obstáculos
             if (obstacleCount < 10) {
-                gap = 220;  // Aumenta o espaço
+                gap = 240;
             }
-            // Mantém o espaço padrão para os obstáculos entre 11 e 15
             else if (obstacleCount < 15) {
                 gap = 200;
             }
-            // Diminui o espaço para os obstáculos entre 16 e 20
             else {
-                gap = 180;  // Menor espaço
+                gap = 180;
             }
 
             if (frame % 90 === 0) {
@@ -145,8 +187,8 @@
 
         function checkCollision() {
             pipes.forEach(pipe => {
-                if (bird.x + bird.size > pipe.x && bird.x - bird.size < pipe.x + pipe.width) {
-                    if (bird.y - bird.size < pipe.top || bird.y + bird.size > canvas.height - pipe.bottom) {
+                if (bird.x + bird.size / 2 > pipe.x && bird.x - bird.size / 2 < pipe.x + pipe.width) {
+                    if (bird.y - bird.size / 2 < pipe.top || bird.y + bird.size / 2 > canvas.height - pipe.bottom) {
                         gameOver = true;
                     }
                 }
@@ -156,49 +198,94 @@
         function checkScore() {
             pipes.forEach(pipe => {
                 if (pipe.x + pipe.width < bird.x && !pipe.passed) {
-                    pipe.passed = true; // Marcar o pipe como passado
-                    score--;  // Diminui o contador
-                    pipe.color = "white";  // Muda a cor do tubo para branco quando o pássaro passa
+                    pipe.passed = true;
+                    score--;
+                    pipe.color = "white";
                 } else if (pipe.x + pipe.width >= bird.x) {
-                    pipe.color = "black";  // Quando o tubo sai da tela, volta para a cor preta
+                    pipe.color = "black";
                 }
             });
         }
 
+        function updateBackgroundColor() {
+            // Muda a cor de fundo com base no valor de score
+            if (score <= 15 && score > 10) {
+                backgroundColorIndex = 1; // Azul céu
+            } else if (score <= 10 && score > 5) {
+                backgroundColorIndex = 2; // Amarelo claro
+            } else if (score <= 5 && score > 0) {
+                backgroundColorIndex = 3; // Vermelho
+            }
+        }
+
+        function rotateBird() {
+            const rotationStep = 2; // O pássaro agora gira 2 graus por clique, mais devagar
+            bird.rotation += bird.rotationDirection * rotationStep;
+
+            // Limita a rotação para um giro completo (360 graus)
+            if (bird.rotation >= 360) {
+                bird.rotation = 0;
+            }
+        }
+
         function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpar a tela completamente
+            if (gamePaused) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = backgroundColors[backgroundColorIndex]; // Altera a cor de fundo com base no índice
+            ctx.fillRect(0, 0, canvas.width, canvas.height); // Aplica o fundo
+
             if (gameOver || score <= 0) {
-                message.style.display = "block";  // Exibir "Você perdeu!" quando o jogo acabar
+                message.style.display = "block";
+                gamePaused = true;
                 return;
             }
 
             drawBird();
             drawPipes();
-            drawScore();  // Exibe o contador na borda esquerda
+            drawScore();
             updateBird();
             updatePipes();
             checkCollision();
             checkScore();
+            updateBackgroundColor(); // Atualiza a cor de fundo
+            rotateBird();
             frame++;
 
             requestAnimationFrame(gameLoop);
         }
 
         function handleUserInput() {
+            if (gamePaused) return;
+
             if (!gameStarted) {
                 gameStarted = true;
-                message.style.display = "none";  // Esconde a frase "Você perdeu!" ao começar o jogo
-                instructions.style.display = "none";  // Esconde a frase "Toque para iniciar!" ao começar o jogo
+                message.style.display = "none";
+                instructions.style.display = "none";
                 bgMusic.play();
                 gameLoop();
-            } else if (gameOver || score <= 0) {
-                resetGame();
-                gameStarted = false;  // Permite reiniciar o jogo
             }
             bird.velocity = bird.lift;
-            flapSound.currentTime = 0; // Garantir que o som comece do início
-            flapSound.play(); // Garantir que o som seja tocado
+            flapSound.currentTime = 0;
+            flapSound.play();
+
+            rotateBird(); // Aplica a rotação ao pássaro
+            toySound.currentTime = 0; // Reseta o tempo do som
+            toySound.volume = 0.1; // Volume do efeito sonoro toy.mp3, metade do volume de outravida.mp3
+            toySound.play(); // Reproduz o som do pássaro
         }
+
+        function handleContinue() {
+            resetGame();
+            gameStarted = false;
+        }
+
+        function handleQuit() {
+            console.log("Jogo finalizado");
+        }
+
+        continueButton.addEventListener("click", handleContinue);
+        quitButton.addEventListener("click", handleQuit);
 
         document.addEventListener("touchstart", handleUserInput);
         document.addEventListener("mousedown", handleUserInput);
