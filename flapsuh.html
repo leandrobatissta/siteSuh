@@ -98,7 +98,7 @@
     <audio id="prizeAudio" src="lele.mp3"></audio>
     
     <!-- Vídeo do prêmio -->
-    <video id="prizeVideo" onclick="handleQuit()" autoplay>
+    <video id="prizeVideo" autoplay>
         <source src="lele.mp4" type="video/mp4">
         Seu navegador não suporta o formato de vídeo MP4.
     </video>
@@ -333,6 +333,10 @@
         function openPrize() {
             prizeVideo.style.display = "block"; // Exibe o vídeo
             prizeVideo.play(); // Dá play no vídeo
+            prizeAudio.play(); // Toca o áudio do prêmio
+            prizeVideo.onended = function() {
+                handleQuit(); // Quando o vídeo terminar, simula o clique no botão "Desistir"
+            }
         }
 
         continueButton.addEventListener("click", handleContinue);
