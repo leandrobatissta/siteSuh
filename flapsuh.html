@@ -52,6 +52,18 @@
             cursor: pointer;
         }
 
+        /* Estilo do vídeo */
+        #prizeVideo {
+            display: none; /* Inicialmente escondido */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Isso vai garantir que o vídeo cubra toda a tela, mantendo a proporção */
+            z-index: 10; /* Garante que o vídeo fique sobre a tela de jogo */
+        }
+
         @media (max-width: 480px) {
             #instructions {
                 font-size: 20px;
@@ -73,7 +85,7 @@
     <div id="instructions">Toque para iniciar!</div>
     <div id="message">
         <div id="congratulations"></div>
-        <div id="prizeLink" onclick="openPrize()" style="display:none;">Clique aqui para abrir o seu prêmio!</div>
+        <div id="prizeLink" onclick="openPrize()">Clique aqui para abrir o seu prêmio!</div>
         <div id="buttons">
             <div id="continue">Reiniciar</div>
             <div id="quit">Desistir</div>
@@ -84,6 +96,13 @@
     <audio id="flapSound" src="flap-sound.mp3"></audio>
     <audio id="toySound" src="toy.mp3"></audio>
     <audio id="prizeAudio" src="lele.mp3"></audio>
+    
+    <!-- Vídeo do prêmio -->
+    <video id="prizeVideo" onclick="handleQuit()" autoplay>
+        <source src="lele.mp4" type="video/mp4">
+        Seu navegador não suporta o formato de vídeo MP4.
+    </video>
+
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
@@ -97,6 +116,7 @@
         const congratulations = document.getElementById("congratulations");
         const prizeLink = document.getElementById("prizeLink");
         const prizeAudio = document.getElementById("prizeAudio");
+        const prizeVideo = document.getElementById("prizeVideo");
 
         const birdImage = new Image();
         birdImage.src = "iconsuh.png"; // Caminho para o arquivo do pássaro
@@ -127,7 +147,7 @@
             frame = 0;
             gameOver = false;
             obstacleCount = 0;
-            score = 2; // Resetando o score para 2
+            score = 2;
             gamePaused = false;
             message.style.display = "none";
             instructions.style.display = "block";
@@ -138,6 +158,9 @@
             firstTouch = true; // Reseta o primeiro toque
             prizeAudio.pause(); // Pausa o áudio do prêmio
             prizeAudio.currentTime = 0; // Reseta o áudio do prêmio
+            prizeVideo.pause(); // Pausa o vídeo
+            prizeVideo.currentTime = 0; // Reseta o vídeo
+            prizeVideo.style.display = "none"; // Esconde o vídeo
         }
 
         function drawBird() {
@@ -210,7 +233,7 @@
                 if (pipe.x + pipe.width < bird.x && !pipe.passed) {
                     pipe.passed = true;
                     score--;
-                    if (score < 0) score = 0; // Impede que o score fique negativo
+                    if (score < 0) score = 0;  // Impede o score de ficar negativo
                     pipe.color = "white";
                 } else if (pipe.x + pipe.width >= bird.x) {
                     pipe.color = "black";
@@ -245,19 +268,15 @@
 
             if (gameOver) {
                 message.style.display = "block";
-                instructions.style.display = "none";
-
-                // Condição de vitória: score 0
-                if (score === 0) {
+                if (score <= 0) {
                     congratulations.textContent = "Parabéns!";
-                    prizeLink.style.display = "block";  // Exibe o link do prêmio
-                    document.getElementById("buttons").style.display = "none";  // Não exibe os botões
+                    prizeLink.style.display = "block"; // Exibe o link
+                    document.getElementById("buttons").style.display = "none"; // Esconde os botões
                 } else {
-                    congratulations.textContent = "Você perdeu!";
-                    prizeLink.style.display = "none";  // Garante que o link do prêmio não apareça em colisão
-                    document.getElementById("buttons").style.display = "flex"; // Exibe os botões
+                    congratulations.textContent = "Você Perdeu!";
+                    document.getElementById("buttons").style.display = "block"; // Exibe os botões
+                    prizeLink.style.display = "none"; // Esconde o link
                 }
-
                 gamePaused = true;
                 return;
             }
@@ -303,7 +322,7 @@
         function handleContinue() {
             resetGame();
             gameStarted = false;
-            document.getElementById("buttons").style.display = "none"; // Esconde os botões novamente
+            document.getElementById("buttons").style.display = "block"; // Mostra novamente os botões
         }
 
         function handleQuit() {
@@ -312,9 +331,8 @@
         }
 
         function openPrize() {
-            prizeAudio.play();
-            prizeAudio.volume = 0.5;
-            prizeAudio.loop = true;
+            prizeVideo.style.display = "block"; // Exibe o vídeo
+            prizeVideo.play(); // Dá play no vídeo
         }
 
         continueButton.addEventListener("click", handleContinue);
