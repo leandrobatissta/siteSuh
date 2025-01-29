@@ -282,18 +282,11 @@
     function handleQuit() {
     console.log("Jogo finalizado");
 
-    // Verifica se existe a janela que abriu esta janela (window.opener)
-    if (window.opener && !window.opener.closed) {
-        // Retorna o foco para a página anterior
-        window.opener.focus();
-        window.close(); // Tenta fechar a janela do jogo
-    } else if (window.close) {
-        // Se a janela foi aberta com window.open(), tente fechá-la diretamente
-        window.close();
-    } else {
-        alert('Não foi possível fechar a janela. Certifique-se de que o jogo foi aberto usando window.open().');
-    }
+    // Redireciona para a URL específica (exemplo: página inicial)
+    window.location.href = 'index.html';  // Substitua pela URL desejada
 }
+
+
 
 
     continueButton.addEventListener("click", handleContinue);
