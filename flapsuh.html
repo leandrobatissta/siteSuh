@@ -328,6 +328,9 @@
         function handleQuit() {
             console.log("Jogo finalizado");
             window.location.href = 'index.html';
+            bgMusic.pause(); // Pausa a música de fundo
+            prizeVideo.muted = true; // Muta o vídeo no último segundo
+
         }
 
         function openPrize() {
