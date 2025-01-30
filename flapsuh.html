@@ -342,7 +342,11 @@
 
 
         continueButton.addEventListener("click", handleContinue);
-        quitButton.addEventListener("click", handleQuit);
+        // Adicionar evento ao botão "Desistir"
+        quitButton.addEventListener("click", function() {
+             handleQuit(); // Chama a função handleQuit para redirecionar
+        });
+
 
         document.addEventListener("touchstart", handleUserInput);
         document.addEventListener("mousedown", handleUserInput);
