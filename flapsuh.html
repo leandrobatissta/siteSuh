@@ -82,7 +82,7 @@
     </style>
 </head>
 <body>
-    <div id="instructions">Toque para iniciar!</div>
+    <div id="instructions">Passe por 20 Obstaculos! </p> Toque para iniciar!</div>
     <div id="message">
         <div id="congratulations"></div>
         <div id="prizeLink" onclick="openPrize()">Clique aqui para abrir o seu prêmio!</div>
@@ -331,13 +331,15 @@
         }
 
         function openPrize() {
-            prizeVideo.style.display = "block"; // Exibe o vídeo
-            prizeVideo.play(); // Dá play no vídeo
-            prizeAudio.play(); // Toca o áudio do prêmio
-            prizeVideo.onended = function() {
-                handleQuit(); // Quando o vídeo terminar, simula o clique no botão "Desistir"
-            }
+        bgMusic.pause(); // Pausa a música de fundo
+        prizeVideo.style.display = "block"; // Exibe o vídeo
+        prizeVideo.play(); // Dá play no vídeo
+        prizeAudio.play(); // Toca o áudio do prêmio
+        prizeVideo.onended = function() {
+        handleQuit(); // Quando o vídeo terminar, simula o clique no botão "Desistir"
+         }
         }
+
 
         continueButton.addEventListener("click", handleContinue);
         quitButton.addEventListener("click", handleQuit);
