@@ -335,10 +335,19 @@
         prizeVideo.style.display = "block"; // Exibe o vídeo
         prizeVideo.play(); // Dá play no vídeo
         prizeAudio.play(); // Toca o áudio do prêmio
-        prizeVideo.onended = function() {
-        handleQuit(); // Quando o vídeo terminar, simula o clique no botão "Desistir"
-         }
+
+        // Monitorando o tempo do vídeo para mutar no último segundo
+        prizeVideo.ontimeupdate = function() {
+        if (prizeVideo.currentTime >= prizeVideo.duration - 1) {
+            prizeVideo.muted = true; // Muta o vídeo no último segundo
         }
+    };
+
+    prizeVideo.onended = function() {
+        handleQuit(); // Quando o vídeo terminar, simula o clique no botão "Desistir"
+        }
+    }
+
 
 
         continueButton.addEventListener("click", handleContinue);
