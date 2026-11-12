@@ -18,7 +18,21 @@
     }
     canvas {
         background: white;
+        /* o canvas guarda 320x480; aqui ele só é ampliado para caber na tela, sem cortar (proporção 2:3) */
+        height: min(100vh, 150vw);
+        width: auto;
+        aspect-ratio: 2 / 3;
     }
+    #desistir { position: fixed; inset: 0; z-index: 50; display: none; place-items: center; padding: 1rem; background: rgba(10, 5, 14, .75); }
+    #desistir.show { display: grid; }
+    .desistir-card { width: min(20rem, 100%); padding: 1.4rem 1.2rem; text-align: center; color: #fff; border: 1px solid rgba(255, 255, 255, .25); border-radius: 20px; background: rgba(30, 14, 36, .92); }
+    .desistir-card p { margin: 0 0 1rem; font-size: 1.15rem; line-height: 1.35; }
+    .desistir-btns { display: flex; gap: .7rem; justify-content: center; }
+    .desistir-btns button { min-height: 44px; min-width: 96px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .4); background: transparent; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+    .desistir-btns button.sim { background: #ffd86b; color: #2a1500; border-color: #ffd86b; }
+    #d-choro { font-size: 1.05rem; }
+    #d-choro .chora { display: block; font-size: 3.4rem; animation: chora .6s ease-in-out infinite alternate; }
+    @keyframes chora { from { transform: translateY(0) rotate(-6deg); } to { transform: translateY(6px) rotate(6deg); } }
     #message, #instructions {
         position: absolute;
         font-size: 28px;
@@ -91,6 +105,15 @@
         <div id="buttons">
             <div id="continue">Reiniciar</div>
             <div id="quit">Desistir</div>
+        </div>
+    </div>
+    <div id="desistir" role="dialog" aria-modal="true" aria-labelledby="desistir-q">
+        <div class="desistir-card">
+            <div id="d-pergunta">
+                <p id="desistir-q">Você quer mesmo desistir do nosso amor? 💔</p>
+                <div class="desistir-btns"><button type="button" class="sim" id="d-sim">Sim</button><button type="button" id="d-nao">Não</button></div>
+            </div>
+            <div id="d-choro" hidden><span class="chora" aria-hidden="true">😭</span><p>Tá bom… eu vou chorar um pouquinho…</p></div>
         </div>
     </div>
     <canvas id="gameCanvas"></canvas>
@@ -329,7 +352,7 @@
 
         function handleQuit() {
             console.log("Jogo finalizado");
-            window.location.href = 'index.html';
+            sairDoJogo(false);
             bgMusic.pause(); // Pausa a música de fundo
             prizeVideo.muted = true; // Muta o vídeo no último segundo
 
@@ -357,8 +380,25 @@
 
         continueButton.addEventListener("click", handleContinue);
         // Adicionar evento ao botão "Desistir"
+        // Desistir é uma brincadeira: "Sim" volta para o jogo; "Não" chora uns segundos e sai (com um "Voltar ao jogo" apagado no site).
+        const desistirBox = document.getElementById("desistir");
+        function sairDoJogo(voltar) {
+            if (window.parent && window.parent !== window) window.parent.postMessage({ tipo: "flap-sair", voltar: !!voltar }, location.origin);
+            else window.location.href = "index.html";
+        }
         quitButton.addEventListener("click", function() {
-             handleQuit(); // Chama a função handleQuit para redirecionar
+            document.getElementById("d-pergunta").hidden = false;
+            document.getElementById("d-choro").hidden = true;
+            desistirBox.classList.add("show");
+        });
+        document.getElementById("d-sim").addEventListener("click", function() {
+            desistirBox.classList.remove("show");
+            handleContinue();
+        });
+        document.getElementById("d-nao").addEventListener("click", function() {
+            document.getElementById("d-pergunta").hidden = true;
+            document.getElementById("d-choro").hidden = false;
+            setTimeout(function() { bgMusic.pause(); sairDoJogo(true); }, 3200);
         });
 
 

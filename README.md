@@ -56,7 +56,7 @@ Isso evita ficar muito tempo no mesmo vídeo e o travamento por vídeo grande. S
 
 ## Vídeo surpresa (`surpresa.mp4`)
 
-Ao acertar a charada e entrar, há **1 chance em 10** de subir pela tela um presente 🎁 (ele sobe, ao contrário do coração, que cai). Se a pessoa **tocar** nele, toca o `surpresa.mp4` em tela cheia, com som; ao terminar (ou no ✕) o fundo volta. Se ninguém tocar, ele some no topo. O vídeo **só é baixado no toque**.
+Ao acertar a charada e entrar, há **1 chance em 10** de subir pela tela uma **miniatura do vídeo** (círculo com ▶, `surpresa-poster.jpg`); ela sobe, ao contrário do coração, que cai. Se a pessoa **tocar** nela, toca o `surpresa.mp4` em tela cheia, com som; ao terminar (ou no ✕) o fundo volta. Se ninguém tocar, ele some no topo. O vídeo **só é baixado no toque**.
 
 - Para testar sem esperar a sorte: abra o site com `?surpresa=1` na URL e responda a charada.
 - A chance fica em `SURPRESA_CHANCE` no `index.html`.
@@ -66,3 +66,8 @@ Ao acertar a charada e entrar, há **1 chance em 10** de subir pela tela um pres
 
 - O botão **Sair** (canto superior direito) apaga a sessão e volta para a charada.
 - Além das charadas, o portão aceita uma **senha mestra**. Só o hash SHA-256 dela fica no código (a frase não aparece no repositório).
+
+## Jogo Flap (`flapsuh.html`)
+
+- O jogo abre sobre a tela e o canvas (320×480) é ampliado para caber, sem cortar.
+- **Desistir** é uma brincadeira: pergunta "Você quer mesmo desistir do nosso amor?". **Sim** volta para o jogo; **Não** chora por uns segundos e sai, deixando um botão "Voltar ao jogo" bem apagado (some em 20 s).
