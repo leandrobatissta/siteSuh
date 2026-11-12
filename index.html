@@ -335,6 +335,7 @@
             -webkit-backdrop-filter: blur(18px) saturate(130%);
             transition: opacity .6s ease, visibility .6s ease;
         }
+        #gate[hidden] { display: none; }
         #gate.open { opacity: 0; visibility: hidden; pointer-events: none; }
 
         .gate-card {
@@ -533,6 +534,9 @@
     // Atualiza o vídeo no elemento HTML
     const videoElement = document.getElementById('video-source');
     videoElement.src = nextVideo;
+
+    // suh11 é um vídeo vertical completo: mostra inteiro, sem cortar
+    document.getElementById('video-bg').style.objectFit = nextVideo === 'suh11.mp4' ? 'contain' : '';
 
     const videoBg = document.getElementById('video-bg');
     videoBg.style.opacity = 0; // Transição suave
@@ -1149,6 +1153,7 @@ function unmuteMedia() {
 
         if (store.get('suh-ok') === '1') {
             gate.hidden = true;
+            gate.classList.add('open');
             body.classList.remove('locked');
             return;
         }
