@@ -549,6 +549,7 @@
         }
 
         function playNextVideo() {
+    document.getElementById('video-bg').muted = true; // o fundo em loop nunca toca som
     // Todos tocam uma vez, em ordem aleatória, antes de qualquer um repetir.
     // Ao virar o ciclo, o último vídeo exibido não pode abrir o ciclo novo.
     const last = playedVideos[playedVideos.length - 1];
@@ -1131,10 +1132,12 @@ function muteMedia() {
 
 // Função para restaurar o som quando sair do iframe
 function unmuteMedia() {
-    const mediaElements = document.querySelectorAll("audio, video");
-    mediaElements.forEach(media => {
+    // Só o áudio da música volta. Os vídeos (principalmente o de fundo, que fica em loop) nunca ganham som aqui.
+    document.querySelectorAll("audio").forEach(media => {
         media.muted = false;
     });
+    const fundo = document.getElementById('video-bg');
+    if (fundo) fundo.muted = true;
 }
 
 

@@ -70,4 +70,4 @@ Ao acertar a charada e entrar, há **1 chance em 10** de subir pela tela um **pr
 ## Jogo Flap (`flapsuh.html`)
 
 - O jogo abre sobre a tela e o canvas (320×480) é ampliado para caber, sem cortar.
-- **Desistir** é uma brincadeira: pergunta "Você quer mesmo desistir do nosso amor?". **Sim** volta para o jogo; **Não** chora por uns segundos e sai, deixando um botão "Voltar ao jogo" bem apagado (some em 20 s).
+- **Desistir** é uma brincadeira: pergunta "Você quer mesmo desistir do nosso amor?". **Não** volta para o jogo; **Sim** chora por 30 segundos (`CHORO_MS` no `flapsuh.html`) e sai, deixando um botão "Voltar ao jogo" bem apagado no site (some em 20 s).

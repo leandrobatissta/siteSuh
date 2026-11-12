@@ -111,9 +111,9 @@
         <div class="desistir-card">
             <div id="d-pergunta">
                 <p id="desistir-q">Você quer mesmo desistir do nosso amor? 💔</p>
-                <div class="desistir-btns"><button type="button" class="sim" id="d-sim">Sim</button><button type="button" id="d-nao">Não</button></div>
+                <div class="desistir-btns"><button type="button" id="d-sim">Sim</button><button type="button" class="sim" id="d-nao">Não</button></div>
             </div>
-            <div id="d-choro" hidden><span class="chora" aria-hidden="true">😭</span><p>Tá bom… eu vou chorar um pouquinho…</p></div>
+            <div id="d-choro" hidden><span class="chora" aria-hidden="true">😭</span><p>Então tá… eu vou ficar aqui chorando…</p></div>
         </div>
     </div>
     <canvas id="gameCanvas"></canvas>
@@ -380,8 +380,11 @@
 
         continueButton.addEventListener("click", handleContinue);
         // Adicionar evento ao botão "Desistir"
-        // Desistir é uma brincadeira: "Sim" volta para o jogo; "Não" chora uns segundos e sai (com um "Voltar ao jogo" apagado no site).
+        // Desistir é uma brincadeira: "Não" (não quero desistir do nosso amor) volta para o jogo; "Sim" chora e segura 30 segundos,
+        // depois sai deixando um "Voltar ao jogo" apagado no site.
         const desistirBox = document.getElementById("desistir");
+        const CHORO_MS = 30000;
+        let choroTimer = null;
         function sairDoJogo(voltar) {
             if (window.parent && window.parent !== window) window.parent.postMessage({ tipo: "flap-sair", voltar: !!voltar }, location.origin);
             else window.location.href = "index.html";
@@ -391,16 +394,16 @@
             document.getElementById("d-choro").hidden = true;
             desistirBox.classList.add("show");
         });
-        document.getElementById("d-sim").addEventListener("click", function() {
+        document.getElementById("d-nao").addEventListener("click", function() {
             desistirBox.classList.remove("show");
             handleContinue();
         });
-        document.getElementById("d-nao").addEventListener("click", function() {
+        document.getElementById("d-sim").addEventListener("click", function() {
             document.getElementById("d-pergunta").hidden = true;
             document.getElementById("d-choro").hidden = false;
-            setTimeout(function() { bgMusic.pause(); sairDoJogo(true); }, 3200);
+            clearTimeout(choroTimer);
+            choroTimer = setTimeout(function() { bgMusic.pause(); sairDoJogo(true); }, CHORO_MS);
         });
-
 
         document.addEventListener("touchstart", handleUserInput);
         document.addEventListener("mousedown", handleUserInput);
