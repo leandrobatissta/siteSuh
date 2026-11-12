@@ -892,6 +892,7 @@ function adicionarFecharVideo(videoEl) {
     x.addEventListener('click', e => { e.stopPropagation(); videoEl.pause(); videoEl.remove(); x.remove(); });
     videoEl.addEventListener('ended', () => x.remove());
     document.body.appendChild(x);
+    return x;
 }
 
 function playVideo() {
@@ -975,7 +976,7 @@ function playVideoAtSpecificTime() {
 
         // Adiciona o vídeo ao corpo do documento
         document.body.appendChild(videoElement);
-        adicionarFecharVideo(videoElement);  // ✕ para fechar o vídeo
+        const fecharFimMusica = adicionarFecharVideo(videoElement);  // ✕ para fechar o vídeo
 
         // Log de diagnóstico para verificar se o vídeo está sendo adicionado
         console.log("Vídeo inserido:", videoElement);
@@ -1004,6 +1005,9 @@ function playVideoAtSpecificTime() {
 
         // Adiciona o botão ao corpo do documento
         document.body.appendChild(playButton);
+        // Se fechar no ✕ antes de tocar em "Clique aqui", o botão não pode ficar solto na tela
+        fecharFimMusica.addEventListener('click', () => playButton.remove());
+        videoElement.addEventListener('ended', () => playButton.remove());
 
         // Efeito de hover para o botão
         playButton.addEventListener('mouseover', () => {
