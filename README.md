@@ -71,4 +71,4 @@ O **coração** (que cai) e o **presente** 🎁 (que sobe) são easter eggs sort
 ## Jogo Flap (`flapsuh.html`)
 
 - O jogo abre sobre a tela e o canvas (320×480) é ampliado para caber, sem cortar.
-- **Desistir** é uma brincadeira: pergunta "Você quer mesmo desistir do nosso amor?". **Não** volta para o jogo; **Sim** chora por 30 segundos (`CHORO_MS` no `flapsuh.html`) e sai, deixando um botão "Voltar ao jogo" bem apagado no site (some em 20 s). Durante o choro já existe um "Voltar ao jogo" na própria tela, que cancela a saída e volta ao jogo.
+- **Desistir** é uma brincadeira: pergunta "Você quer mesmo desistir do nosso amor?". **Não** volta para o jogo; **Sim** chora por 30 segundos (`CHORO_MS` no `flapsuh.html`) e sai, deixando um botão "Voltar ao jogo" bem apagado no site (some em 20 s). Durante o choro já existe um "Voltar ao jogo" na própria tela, que cancela a saída, mostra uma cara de alegria com "EBA!!!" e confete por 1,4 s e volta ao jogo.

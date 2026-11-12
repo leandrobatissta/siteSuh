@@ -33,6 +33,14 @@
     #d-choro { font-size: 1.05rem; }
     #d-voltar { min-height: 44px; padding: 0 1.4rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .12); color: #fff; font: inherit; font-weight: 700; cursor: pointer; opacity: .55; transition: opacity .2s; }
     #d-voltar:hover, #d-voltar:focus-visible { opacity: 1; }
+    #d-eba { padding: .4rem 0 .2rem; }
+    #d-eba .eba-cara { display: block; font-size: 4.2rem; line-height: 1.1; animation: pula .4s ease-in-out infinite alternate; }
+    #d-eba .eba-txt { margin: .2rem 0 0; font-size: 2.1rem; font-weight: 800; letter-spacing: .06em; color: #ffd86b; animation: estoura .45s ease-out; }
+    @keyframes pula { from { transform: translateY(2px) rotate(-8deg) scale(1); } to { transform: translateY(-10px) rotate(8deg) scale(1.12); } }
+    @keyframes estoura { from { transform: scale(.3); opacity: 0; } 70% { transform: scale(1.25); opacity: 1; } to { transform: scale(1); } }
+    .confete { position: fixed; left: 50%; top: 50%; z-index: 60; font-size: 1.6rem; pointer-events: none; animation: confete 1.3s ease-out forwards; }
+    @keyframes confete { from { transform: translate(-50%, -50%) scale(.4); opacity: 1; } to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--rot)) scale(1); opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { #d-eba .eba-cara, #d-eba .eba-txt, .confete { animation: none; } }
     #d-choro .chora { display: block; font-size: 3.4rem; animation: chora .6s ease-in-out infinite alternate; }
     @keyframes chora { from { transform: translateY(0) rotate(-6deg); } to { transform: translateY(6px) rotate(6deg); } }
     #message, #instructions {
@@ -116,6 +124,7 @@
                 <div class="desistir-btns"><button type="button" id="d-sim">Sim</button><button type="button" class="sim" id="d-nao">Não</button></div>
             </div>
             <div id="d-choro" hidden><span class="chora" aria-hidden="true">😭</span><p>Então tá… eu vou ficar aqui chorando…</p><button type="button" id="d-voltar">Voltar ao jogo</button></div>
+            <div id="d-eba" hidden><span class="eba-cara" aria-hidden="true">🥳</span><p class="eba-txt">EBA!!!</p></div>
         </div>
     </div>
     <canvas id="gameCanvas"></canvas>
@@ -394,6 +403,7 @@
         quitButton.addEventListener("click", function() {
             document.getElementById("d-pergunta").hidden = false;
             document.getElementById("d-choro").hidden = true;
+            document.getElementById("d-eba").hidden = true;
             desistirBox.classList.add("show");
         });
         document.getElementById("d-nao").addEventListener("click", function() {
@@ -401,10 +411,33 @@
             handleContinue();
         });
         // Na tela do choro há um "Voltar ao jogo" (apagado, fica nítido ao tocar): cancela a saída e volta ao jogo.
+        function confete() {
+            const emojis = ["🎉", "✨", "💛", "❤️", "🥳", "⭐"];
+            for (let i = 0; i < 22; i++) {
+                const c = document.createElement("span");
+                c.className = "confete";
+                c.textContent = emojis[i % emojis.length];
+                const ang = Math.random() * Math.PI * 2, dist = 90 + Math.random() * 150;
+                c.style.setProperty("--dx", Math.round(Math.cos(ang) * dist) + "px");
+                c.style.setProperty("--dy", Math.round(Math.sin(ang) * dist) + "px");
+                c.style.setProperty("--rot", Math.round(Math.random() * 360 - 180) + "deg");
+                document.body.appendChild(c);
+                setTimeout(function() { c.remove(); }, 1400);
+            }
+        }
+        // Voltar da tela do choro: cara de alegria, "EBA!!!" e confete por um instante, e então volta ao jogo.
         document.getElementById("d-voltar").addEventListener("click", function() {
             clearTimeout(choroTimer);
-            desistirBox.classList.remove("show");
-            handleContinue();
+            this.disabled = true;
+            document.getElementById("d-choro").hidden = true;
+            document.getElementById("d-eba").hidden = false;
+            confete();
+            setTimeout(function() {
+                desistirBox.classList.remove("show");
+                document.getElementById("d-eba").hidden = true;
+                document.getElementById("d-voltar").disabled = false;
+                handleContinue();
+            }, 1400);
         });
         document.getElementById("d-sim").addEventListener("click", function() {
             document.getElementById("d-pergunta").hidden = true;
