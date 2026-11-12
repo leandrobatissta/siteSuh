@@ -453,7 +453,7 @@
 
             <section class="counter" id="namoro">
                 <h2>Namoro</h2>
-                <p class="date" id="namoro-date">05/05/2025</p>
+                <p class="date" id="namoro-date">16/05/2025</p>
                 <p class="days"><span class="big" id="namoro-days">0</span><span class="unit">dias</span></p>
                 <p class="detail" id="namoro-detail"></p>
             </section>
@@ -506,7 +506,7 @@
 
         const startDateFirstLife = new Date('2023-04-25T00:00:00').getTime();
         const startDateSecondLife = new Date('2024-12-16T00:00:00').getTime();
-        const startDateNamoro = new Date('2025-05-05T00:00:00').getTime();
+        const startDateNamoro = new Date('2025-05-16T00:00:00').getTime();
 
         // Função para pré-carregar todos os vídeos
         function preloadVideos() {
@@ -1051,7 +1051,7 @@ function unmuteMedia() {
         const D = {
             primeira: [2023, 4, 25],
             outra:    [2024, 12, 16],
-            namoro:   [2025, 5, 5],
+            namoro:   [2025, 5, 16],
             leandro:  [1982, 3, 10],
             suelen:   [1989, 2, 22]
         };
@@ -1088,8 +1088,8 @@ function unmuteMedia() {
         const num = n => [String(n), extenso(n)];
 
         const CHARADAS = [
-            { q: 'Na Primeira Vida nosso dia foi 25. Na Outra Vida, 16. No namoro, 5. Some os três dias e abra o meu coração.',
-              a: () => num(25 + 16 + 5), dica: 'Só os dias, sem os meses nem os anos.' },
+            { q: 'Na Primeira Vida nosso dia foi 25. Na Outra Vida, 16. No namoro, 16. Some os três dias e abra o meu coração.',
+              a: () => num(D.primeira[2] + D.outra[2] + D.namoro[2]), dica: 'Só os dias, sem os meses nem os anos.' },
             { q: 'Abril, dezembro e maio: os três meses em que nossa história mudou de capítulo. Quanto dá a soma dos números desses meses?',
               a: () => num(4 + 12 + 5), dica: 'Abril é o 4º mês do ano.' },
             { q: 'Quantos anos o universo me fez esperar por ela? Conte a diferença entre o ano em que eu nasci e o ano em que ela nasceu.',
@@ -1101,17 +1101,17 @@ function unmuteMedia() {
             { q: 'O meu nome completo e o dela têm exatamente a mesma quantidade de vogais. Quantas são?',
               a: () => num(vogais(NOME_L)), dica: 'Leandro Batista: a, e, o, a, i, a…' },
             { q: 'Quantos dias a Outra Vida levou para virar namoro?',
-              a: () => num(dias(D.outra, D.namoro)), dica: 'De 16/12/2024 até 05/05/2025.' },
+              a: () => num(dias(D.outra, D.namoro)), dica: 'De 16/12/2024 até 16/05/2025.' },
             { q: 'Quantos dias separam a nossa Primeira Vida da Outra Vida?',
               a: () => num(dias(D.primeira, D.outra)), dica: 'De 25/04/2023 até 16/12/2024.' },
             { q: 'Quantos meses completos de namoro nós já vivemos até hoje?',
-              a: () => num(meses(D.namoro)), dica: 'O namoro começou em 05/05/2025.' },
+              a: () => num(meses(D.namoro)), dica: 'O namoro começou em 16/05/2025.' },
             { q: 'Quantos dias faltam para o próximo aniversário de namoro?',
-              a: () => num(proxNamoro()), dica: 'O aniversário é todo dia 5 de maio.' },
+              a: () => num(proxNamoro()), dica: 'O aniversário é todo dia 16 de maio.' },
             { q: 'Qual é o mês, mais perto do Natal, em que a Outra Vida nasceu?',
               a: () => ['dezembro'], dica: 'É o último mês do ano.' },
-            { q: 'O nosso namoro começou no dia 5 do mês 5. Multiplique um pelo outro.',
-              a: () => num(D.namoro[1] * D.namoro[2]), dica: 'Cinco vezes cinco.' },
+            { q: 'O nosso namoro começou no dia 16 do mês 5. Multiplique um pelo outro.',
+              a: () => num(D.namoro[1] * D.namoro[2]), dica: 'Dezesseis vezes cinco.' },
             { q: 'Escreva a data em que ela nasceu, só os números (dia, mês e ano), e some todos os dígitos.',
               a: () => num(somaDigitos(D.suelen)), dica: 'São 8 dígitos, e o ano termina em 89.' },
             { q: 'Escreva a minha data de nascimento só com os números (dia, mês e ano) e some todos os dígitos.',
