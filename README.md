@@ -56,8 +56,13 @@ Isso evita ficar muito tempo no mesmo vídeo e o travamento por vídeo grande. S
 
 ## Vídeo surpresa (`surpresa.mp4`)
 
-Ao acertar a charada e entrar, há **1 chance em 10** de aparecer o pop-up "Tem uma surpresa pra você" (Quero! / Agora não). Se a pessoa aceita, toca o `surpresa.mp4` em tela cheia, com som; ao terminar (ou no ✕) o fundo volta. O vídeo **só é baixado se a pessoa aceitar**.
+Ao acertar a charada e entrar, há **1 chance em 10** de subir pela tela um presente 🎁 (ele sobe, ao contrário do coração, que cai). Se a pessoa **tocar** nele, toca o `surpresa.mp4` em tela cheia, com som; ao terminar (ou no ✕) o fundo volta. Se ninguém tocar, ele some no topo. O vídeo **só é baixado no toque**.
 
 - Para testar sem esperar a sorte: abra o site com `?surpresa=1` na URL e responda a charada.
 - A chance fica em `SURPRESA_CHANCE` no `index.html`.
 - Padrão do arquivo: preto e branco, vertical 1080×1920, H.264, **com áudio** (AAC 96 kbps), `faststart`. Vídeo do iPhone em HDR usa o `-vf` HDR da seção acima. Ele **não entra** em `videoSources` (não é fundo) e não segue a regra dos 15 s: toca inteiro.
+
+## Sair e senha mestra
+
+- O botão **Sair** (canto superior direito) apaga a sessão e volta para a charada.
+- Além das charadas, o portão aceita uma **senha mestra**. Só o hash SHA-256 dela fica no código (a frase não aparece no repositório).

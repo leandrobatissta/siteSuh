@@ -120,6 +120,7 @@
             font-style: italic;
             font-weight: 700;
             font-size: clamp(4.2rem, 22vw, 7.5rem);
+            text-shadow: 0 0 26px rgba(255, 216, 107, .4), 0 2px 12px rgba(0, 0, 0, .55);
         }
         #days-together-second .unit {
             font-size: .85rem;
@@ -177,8 +178,8 @@
             font-family: var(--serif);
             font-style: italic;
             font-weight: 700;
-            font-size: clamp(3rem, 6.5vw, 4.4rem);
-            text-shadow: 0 2px 12px rgba(0, 0, 0, .55);
+            font-size: clamp(3.4rem, 8vw, 5.2rem);
+            text-shadow: 0 0 20px rgba(255, 216, 107, .38), 0 2px 12px rgba(0, 0, 0, .55);
         }
         .counter .days .unit {
             margin-top: .45rem;
@@ -314,7 +315,7 @@
         @media (max-width: 420px) {
             .cards { gap: .6rem; }
             .counter { padding: .9rem .6rem; border-radius: 16px; }
-            .counter .days .big { font-size: 2.7rem; }
+            .counter .days .big { font-size: 3.7rem; }
             .counter .detail { font-size: .7rem; }
         }
 
@@ -324,16 +325,16 @@
         body.locked .music-player { visibility: hidden; }
 
         /* Vídeo surpresa: pop-up "aceita uma surpresa?" e o player em tela cheia (preto e branco, com som) */
-        #surpresa { position: fixed; inset: 0; z-index: 19000; display: grid; place-items: center; padding: 1rem; background: rgba(10, 5, 14, .6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; visibility: hidden; transition: opacity .4s ease, visibility .4s ease; }
-        #surpresa.show { opacity: 1; visibility: visible; }
-        #surpresa[hidden] { display: none; }
-        .surp-card { width: min(22rem, 100%); padding: 1.6rem 1.4rem 1.3rem; text-align: center; color: #fff; border: 1px solid var(--glass-line); border-radius: 22px; background: var(--glass); backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%); box-shadow: 0 20px 60px rgba(0, 0, 0, .45); }
-        .surp-emoji { margin: 0 0 .4rem; font-size: 2.6rem; line-height: 1; }
-        .surp-card h2 { margin: 0 0 .35rem; font-family: 'Playfair Display', serif; font-size: 1.45rem; color: var(--gold); }
-        .surp-card p { margin: 0 0 1.1rem; opacity: .9; }
-        .surp-actions { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
-        .surp-actions button { min-height: 44px; padding: 0 1.3rem; border-radius: 999px; font: inherit; font-weight: 700; cursor: pointer; border: 1px solid var(--glass-line); color: #fff; background: transparent; }
-        .surp-actions button.primary { color: #2a1500; background: var(--gold); border-color: var(--gold); }
+        /* Presente da surpresa: sobe pela tela (em vez de cair como o coração); se tocar, abre o vídeo surpresa */
+        .rising-gift { position: fixed; bottom: 0; z-index: 9990; padding: 0; border: 0; background: none; cursor: pointer; font-size: 3.6rem; line-height: 1; filter: drop-shadow(0 4px 12px rgba(0, 0, 0, .55)); animation: riseUp 11s linear forwards; will-change: transform; -webkit-tap-highlight-color: transparent; }
+        .rising-gift span { display: block; animation: swayGift 2.4s ease-in-out infinite; }
+        @keyframes riseUp { from { transform: translateY(110%); } to { transform: translateY(calc(-100vh - 110%)); } }
+        @keyframes swayGift { 0%, 100% { transform: translateX(-18px) rotate(-8deg); } 50% { transform: translateX(18px) rotate(8deg); } }
+        @media (prefers-reduced-motion: reduce) { .rising-gift span { animation: none; } }
+        /* Sair: volta para a charada */
+        #sair { position: fixed; top: max(.7rem, env(safe-area-inset-top)); right: .8rem; z-index: 60; min-height: 36px; padding: 0 .95rem; border-radius: 999px; border: 1px solid var(--glass-line); background: var(--glass); color: #fff; font: inherit; font-size: .82rem; font-weight: 600; letter-spacing: .02em; cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        #sair:hover { border-color: var(--gold); }
+        body.locked #sair { display: none; }
         #surp-player { position: fixed; inset: 0; z-index: 21000; background: #000; display: grid; place-items: center; }
         #surp-player[hidden] { display: none; }
         #surp-video { width: 100%; height: 100%; object-fit: contain; background: #000; }
@@ -488,17 +489,7 @@
     </div>
 
 
-    <div id="surpresa" hidden>
-        <div class="surp-card" role="dialog" aria-modal="true" aria-labelledby="surp-t">
-            <p class="surp-emoji" aria-hidden="true">🎁</p>
-            <h2 id="surp-t">Tem uma surpresa pra você</h2>
-            <p>Quer ver agora?</p>
-            <div class="surp-actions">
-                <button type="button" class="primary" id="surp-sim">Quero!</button>
-                <button type="button" id="surp-nao">Agora não</button>
-            </div>
-        </div>
-    </div>
+    <button type="button" id="sair">Sair</button>
     <div id="surp-player" hidden>
         <video id="surp-video" playsinline preload="none"></video>
         <button type="button" id="surp-fechar" aria-label="Fechar a surpresa">✕</button>
@@ -1233,22 +1224,28 @@ function unmuteMedia() {
             store.set('suh-ok', '1');
             if (typeof resetHideTimer === 'function') resetHideTimer();
             setTimeout(() => { gate.hidden = true; }, 700);
-            // Ao entrar, 1 chance em 10 de aparecer o pop-up da surpresa (?surpresa=1 na URL força, para testar).
-            if (Math.random() < SURPRESA_CHANCE || /[?&]surpresa=1\b/.test(location.search)) setTimeout(oferecerSurpresa, 1400);
+            // Ao entrar, 1 chance em 10 de subir o presente da surpresa (?surpresa=1 na URL força, para testar).
+            if (Math.random() < SURPRESA_CHANCE || /[?&]surpresa=1\b/.test(location.search)) setTimeout(soltarSurpresa, 2200);
         }
 
-        // Vídeo surpresa: só baixa se a pessoa aceitar (preload none, src definido no clique).
+        // Vídeo surpresa: um presente sobe pela tela; se a pessoa tocar, toca o vídeo. Só baixa o vídeo no toque (preload none, src definido no clique).
         const SURPRESA_CHANCE = 0.1;
-        function oferecerSurpresa() {
-            const pop = document.getElementById('surpresa');
+        function soltarSurpresa() {
+            const g = document.createElement('button');
+            g.type = 'button';
+            g.className = 'rising-gift';
+            g.setAttribute('aria-label', 'Uma surpresa! Toque para ver');
+            g.style.left = (12 + Math.random() * 66) + 'vw';
+            g.innerHTML = '<span aria-hidden="true">🎁</span>';
+            g.addEventListener('animationend', e => { if (e.target === g) g.remove(); });
+            g.addEventListener('click', e => { e.stopPropagation(); g.remove(); tocarSurpresa(); });
+            document.body.appendChild(g);
+        }
+        function tocarSurpresa() {
             const player = document.getElementById('surp-player');
             const vid = document.getElementById('surp-video');
             const musica = document.getElementById('background-music');
             const bg = document.getElementById('video-bg');
-            pop.hidden = false;
-            requestAnimationFrame(() => pop.classList.add('show'));
-            document.getElementById('surp-sim').focus();
-            function fecharPop() { pop.classList.remove('show'); setTimeout(() => { pop.hidden = true; }, 450); }
             function fecharPlayer() {
                 vid.pause();
                 player.hidden = true;
@@ -1257,19 +1254,21 @@ function unmuteMedia() {
                 window.__surpresaAtiva = false;
                 if (bg) bg.play().catch(() => {});
             }
-            document.getElementById('surp-nao').onclick = fecharPop;
-            document.getElementById('surp-sim').onclick = () => {
-                fecharPop();
-                window.__surpresaAtiva = true;
-                if (musica && !musica.paused) { musica.pause(); const lb = document.getElementById('buttonLabel'); if (lb) lb.innerText = 'Tocar Música'; }
-                if (bg) bg.pause();
-                vid.src = 'surpresa.mp4';
-                player.hidden = false;
-                vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); });
-            };
+            window.__surpresaAtiva = true;
+            if (musica && !musica.paused) { musica.pause(); const lb = document.getElementById('buttonLabel'); if (lb) lb.innerText = 'Tocar Música'; }
+            if (bg) bg.pause();
+            vid.src = 'surpresa.mp4';
+            player.hidden = false;
+            vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); });
             vid.onended = fecharPlayer;
             document.getElementById('surp-fechar').onclick = fecharPlayer;
         }
+
+        // Sair: apaga a sessão e volta para a charada.
+        document.getElementById('sair').addEventListener('click', () => {
+            try { sessionStorage.removeItem('suh-ok'); sessionStorage.removeItem('suh-resume'); } catch (e) {}
+            location.reload();
+        });
 
         if (store.get('suh-ok') === '1') {
             gate.hidden = true;
@@ -1296,16 +1295,32 @@ function unmuteMedia() {
             if (!resp) return;
             const certas = CHARADAS[atual].a().map(x => norm(x));
             if (certas.includes(resp)) {
-                msg.className = '';
-                msg.textContent = 'Era essa mesmo, meu amor. Pode entrar. 💛';
-                setTimeout(abrir, 700);
+                acertou();
             } else {
-                msg.className = 'err';
-                msg.textContent = 'Quase lá! Pensa com carinho e tenta de novo.';
-                gate.classList.remove('shake'); void gate.offsetWidth; gate.classList.add('shake');
-                input.select();
+                // Senha mestra: entra sem acertar a charada (guardada só como hash).
+                senhaMestra(resp).then(ok => { if (ok) acertou(); else errou(); });
             }
         });
+        function acertou() {
+            msg.className = '';
+            msg.textContent = 'Era essa mesmo, meu amor. Pode entrar. 💛';
+            setTimeout(abrir, 700);
+        }
+        function errou() {
+            msg.className = 'err';
+            msg.textContent = 'Quase lá! Pensa com carinho e tenta de novo.';
+            gate.classList.remove('shake'); void gate.offsetWidth; gate.classList.add('shake');
+            input.select();
+        }
+        // Senha mestra: só o hash SHA-256 fica no código (a frase em si não aparece no repositório).
+        const MESTRA = 'd36ba1ef48f0bc34c82d74e8403cd049a946537f2e0611bcb655d04068b0ea00';
+        async function senhaMestra(resp) {
+            try {
+                if (!window.crypto || !crypto.subtle) return false;
+                const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(resp.replace(/ /g, '')));
+                return Array.from(new Uint8Array(buf)).map(x => x.toString(16).padStart(2, '0')).join('') === MESTRA;
+            } catch (e) { return false; }
+        }
         document.getElementById('gate-hint').addEventListener('click', () => {
             msg.className = '';
             msg.textContent = 'Dica: ' + CHARADAS[atual].dica;
