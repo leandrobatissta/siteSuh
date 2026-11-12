@@ -514,7 +514,7 @@
             videoSources.forEach(src => {
                 const video = document.createElement('video');
                 video.src = src;
-                video.preload = 'auto'; // Precarrega o vídeo
+                video.preload = 'metadata'; // só metadados: baixar tudo de uma vez travava o vídeo atual
             });
         }
 
@@ -550,6 +550,21 @@
 
         const videoElement = document.getElementById('video-bg');
         videoElement.addEventListener('ended', playNextVideo);
+        // erro de carregamento: pula para o próximo
+        videoElement.addEventListener('error', () => setTimeout(playNextVideo, 500));
+
+        // vigia: se o fundo parar de andar por 8 s (rede lenta), pula para o próximo;
+        // se o navegador pausar o autoplay, tenta tocar de novo
+        let lastT = -1, stuck = 0;
+        setInterval(() => {
+            const v = videoElement;
+            if (document.hidden || v.currentSrc.indexOf('lele') !== -1) return;
+            if (v.paused) { v.play().catch(() => {}); return; }
+            if (v.currentTime === lastT) stuck++; else { stuck = 0; lastT = v.currentTime; }
+            if (stuck >= 8) { stuck = 0; playNextVideo(); }
+        }, 1000);
+        // um toque na tela retoma o fundo, caso o celular tenha pausado
+        document.addEventListener('click', () => { if (videoElement.paused) videoElement.play().catch(() => {}); });
 
         preloadVideos(); // Pré-carrega os vídeos
 
