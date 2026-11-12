@@ -3,3 +3,53 @@
 Contador de dias juntos, nas duas vidas.
 
 Online: https://leandrobatissta.github.io/siteSuh/
+
+## Como adicionar um vídeo de fundo
+
+O fundo do site sorteia os vídeos `suhNN.mp4`: todos tocam uma vez, em ordem aleatória, antes de qualquer um repetir. Para incluir um novo, siga este padrão.
+
+### 1. Converter (preto e branco, leve, sem áudio)
+
+Padrão de saída: **preto e branco**, vertical **1080×1920**, H.264, **sem áudio**, 30 fps, com `faststart`. Não coloque o arquivo original (`.mov` do iPhone) no repositório: ele é grande demais.
+
+Vídeo comum (SDR), como gravação de tela:
+
+```bash
+ffmpeg -i ORIGINAL.mov -an \
+  -vf "fps=30,format=gray,format=yuv420p" \
+  -c:v libx264 -preset veryslow -crf 30 -maxrate 1500k -bufsize 3000k \
+  -profile:v high -level 4.2 -g 60 -keyint_min 30 \
+  -colorspace bt709 -color_primaries bt709 -color_trc bt709 \
+  -movflags +faststart suhNN.mp4
+```
+
+Vídeo do iPhone em **HDR** (`.MOV` com HLG/BT.2020): trocar o `-vf` por este, senão o preto e branco sai lavado:
+
+```bash
+-vf "fps=30,scale=in_color_matrix=bt2020:out_color_matrix=bt709,format=gbrp10le,eq=contrast=1.15:gamma=1.1:saturation=0,format=gray,format=yuv420p"
+```
+
+Para saber se é HDR: `ffprobe -show_entries stream=color_transfer ORIGINAL.mov` (`arib-std-b67` = HDR). Gravação de tela em tela cheia (`yuvj420p`): acrescentar `scale=in_range=full:out_range=tv` antes de `format=gray`.
+
+### 2. Regra dos 15 segundos
+
+**Não é preciso cortar** o vídeo. O site já cuida disso:
+
+- Vídeo de **até 15 s** toca inteiro.
+- Vídeo **com mais de 15 s** toca **15 s**, pausa e passa para o próximo. Quando for sorteado de novo, **continua de onde parou**. Ao chegar ao fim, volta ao começo.
+- Isso é automático. Os limites estão em `SEG_MAX` e `LONG_MIN` no `index.html`.
+- O ponto onde parou fica guardado na sessão do navegador.
+
+Isso evita ficar muito tempo no mesmo vídeo e o travamento por vídeo grande. Se o fundo ficar parado por 8 s, o site também pula sozinho para o próximo.
+
+### 3. Registrar no `index.html`
+
+1. Copie o arquivo para a raiz do repositório com o próximo número (`suh17.mp4`...).
+2. Inclua o nome na lista `videoSources`.
+3. Para o vídeo aparecer **inteiro, sem cortar** (padrão para os verticais completos), inclua também na lista `noCrop`. Fora dela, o vídeo preenche a tela e corta as bordas.
+
+### 4. Conferir antes de publicar
+
+- Peso: bem abaixo de 20 MB (um vídeo de 15 s costuma ficar entre 1 e 3 MB).
+- Veja um quadro do resultado: preto e branco, na posição certa, sem barras do app em volta. Em gravação de tela, corte a interface (`crop=`) antes de converter.
+- Teste abrindo o site: o vídeo toca e troca para o próximo.

@@ -492,6 +492,11 @@
     </div>
 
     <script>
+        /* PADRÃO DOS VÍDEOS DE FUNDO (detalhes no README.md)
+           - preto e branco, 1080x1920, H.264 sem áudio, 30 fps, "faststart", nome suhNN.mp4
+           - vídeo com mais de 15 s NÃO precisa ser cortado: o site toca 15 s, pula para o
+             próximo e, quando ele for sorteado de novo, continua de onde parou (SEG_MAX/LONG_MIN)
+           - novo vídeo: incluir em videoSources e, se for para aparecer inteiro, em noCrop */
         const videoSources = ["suh1.mp4", "suh2.mp4", "suh3.mp4", "suh5.mp4", "suh6.mp4", "suh7.mp4", "suh8.mp4", "suh9.mp4", "suh10.mp4", "suh11.mp4", "suh12.mp4", "suh13.mp4", "suh14.mp4", "suh15.mp4", "suh16.mp4"];
         const noCrop = ["suh11.mp4", "suh12.mp4", "suh13.mp4", "suh14.mp4", "suh15.mp4", "suh16.mp4"]; // verticais completos: mostrar inteiros
         let playedVideos = []; // vídeos já exibidos no ciclo atual (o primeiro é sorteado)
@@ -554,7 +559,7 @@
         videoElement.addEventListener('ended', playNextVideo);
         // vídeos longos tocam em trechos e continuam de onde pararam na próxima vez
         const SEG_MAX = 15;   // segundos por trecho
-        const LONG_MIN = 20;  // só vale para vídeos mais longos que isso
+        const LONG_MIN = 15;  // vídeo MAIS LONGO que isso toca em trechos de SEG_MAX e continua depois
         let segStart = 0, switching = false;
         const resume = (() => { try { return JSON.parse(sessionStorage.getItem('suh-resume') || '{}'); } catch (e) { return {}; } })();
         const saveResume = () => { try { sessionStorage.setItem('suh-resume', JSON.stringify(resume)); } catch (e) {} };
