@@ -56,10 +56,10 @@ Isso evita ficar muito tempo no mesmo vídeo e o travamento por vídeo grande. S
 
 ## Vídeo surpresa (`surpresa.mp4`)
 
-O presente 🎁 sobe pela tela (ao contrário do coração, que cai) com a regra do coração, mas com o 2º sorteio mais generoso: a cada 15 s há um sorteio; **50%** no primeiro, **40%** no segundo e 0% do terceiro em diante (no máximo dois por visita, nos primeiros 30 s). A contagem começa quando o site abre, depois da charada. Se a pessoa **tocar** nele, toca o `surpresa.mp4` em tela cheia, com som; ao terminar (ou no ✕) o fundo volta. Se ninguém tocar, ele some no topo. Só aparece um por vez, nunca durante a surpresa nem o jogo Flap. O vídeo **só é baixado no toque**.
+O **coração** (que cai) e o **presente** 🎁 (que sobe) são easter eggs sorteados **de tempos em tempos, sem limite**, enquanto o site está aberto depois da charada: a cada 20 s há um sorteio, com 15% de soltar o coração e 15% de soltar o presente (70% de não aparecer nada). Só um por vez, e nunca durante a surpresa nem o jogo Flap. Se a pessoa **tocar** no presente, toca o `surpresa.mp4` em tela cheia, com som; ao terminar (ou no ✕) o fundo volta. Se ninguém tocar, ele some. O vídeo **só é baixado no toque**.
 
 - Para testar sem esperar a sorte: abra o site com `?surpresa=1` na URL e responda a charada.
-- As chances (0.5 e 0.4) ficam em `iniciarSorteioSurpresa` no `index.html`.
+- O intervalo e as chances ficam no topo do bloco de easter eggs do `index.html`: `EGG_INTERVALO_MS`, `EGG_CHANCE_CORACAO` e `EGG_CHANCE_PRESENTE`.
 - `?surpresa=1` solta o presente já na entrada.
 - Padrão do arquivo: preto e branco, vertical 1080×1920, H.264, **com áudio** (AAC 96 kbps), `faststart`. Vídeo do iPhone em HDR usa o `-vf` HDR da seção acima. Ele **não entra** em `videoSources` (não é fundo) e não segue a regra dos 15 s: toca inteiro.
 

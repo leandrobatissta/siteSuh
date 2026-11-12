@@ -820,44 +820,34 @@ document.querySelector('.falling-heart').addEventListener('click', function() {
     });
 });
 
-let clique = 0;  // Contador de cliques
+// Easter eggs sorteados de tempos em tempos, sem limite, enquanto o site está aberto depois do login:
+// o coração que cai e o presente que sobe. A cada EGG_INTERVALO_MS há um sorteio; no máximo um deles por vez.
+const EGG_INTERVALO_MS = 20000;      // de quanto em quanto tempo sorteia
+const EGG_CHANCE_CORACAO = 0.15;     // 15% de soltar o coração em cada sorteio
+const EGG_CHANCE_PRESENTE = 0.15;    // 15% de soltar o presente (os dois somam 30%; 70% não aparece nada)
 
-// Função para fazer o coração cair com probabilidade que diminui a cada clique
-function dropHeart() {
+function soltarCoracao() {
     const heart = document.querySelector('.falling-heart');
-    
-    // Atualiza o contador de cliques
-    clique++;
-    
-    // Define a probabilidade com base no número de cliques
-    let chance;
-    if (clique === 1) {
-        chance = 0.5;  // 50% no primeiro clique
-    } else if (clique === 2) {
-        chance = 0.2;  // 20% no segundo clique
-    } else if (clique >= 3) {
-        chance = 0;  // 0% a partir do terceiro clique
-    }
-    
-    // Gera um número aleatório entre 0 e 1
-    const randomChance = Math.random();
-    
-    // Se o número gerado for menor ou igual à chance definida, o coração aparece
-    if (randomChance <= chance) {
-        // Exibe o coração e aplica a animação
-        heart.style.display = 'block';
-        heart.style.animation = 'fall 12s linear, zigzag 16s ease-in-out';
-
-        // Depois de 12 segundos, o coração deve desaparecer sem reaparecer
-        setTimeout(() => {
-            heart.style.display = 'none';  // Esconde o coração após a animação terminar
-            heart.style.animation = '';  // Remove a animação para não reiniciar
-        }, 12000);  // 12000ms = 12 segundos (duração da animação)
-    }
+    window.__coracaoCaindo = true;
+    heart.style.display = 'block';
+    heart.style.animation = 'fall 12s linear, zigzag 16s ease-in-out';
+    // Depois de 12 segundos o coração some até o próximo sorteio
+    setTimeout(() => {
+        heart.style.display = 'none';
+        heart.style.animation = '';
+        window.__coracaoCaindo = false;
+    }, 12000);
 }
 
-// Chama a função dropHeart a cada 15 segundos
-setInterval(dropHeart, 15000);  // 15000 milissegundos = 15 segundos
+function sortearEasterEgg() {
+    if (document.body.classList.contains('locked')) return;              // só depois do login
+    if (window.__surpresaAtiva || window.__coracaoCaindo) return;        // nada por cima da surpresa nem de outro easter egg
+    if (document.querySelector('.rising-gift') || document.getElementById('flapSuhIframe')) return;
+    const r = Math.random();
+    if (r < EGG_CHANCE_CORACAO) soltarCoracao();
+    else if (r < EGG_CHANCE_CORACAO + EGG_CHANCE_PRESENTE && window.__soltarPresente) window.__soltarPresente();
+}
+setInterval(sortearEasterEgg, EGG_INTERVALO_MS);
 
 let videoPlayed = false; // Controle para garantir que a ação ocorra apenas uma vez por clique válido
 let clickCount = 0; // Contador de cliques na tela
@@ -1251,7 +1241,6 @@ function unmuteMedia() {
             setTimeout(() => { gate.hidden = true; }, 700);
             // ?surpresa=1 na URL solta o presente já na entrada (para testar). O sorteio normal é a cada início de vídeo de fundo.
             if (/[?&]surpresa=1\b/.test(location.search)) setTimeout(soltarSurpresa, 2200);
-            iniciarSorteioSurpresa();
         }
 
         // Vídeo surpresa: um presente sobe pela tela; se a pessoa tocar, toca o vídeo. Só baixa o vídeo no toque (preload none, src definido no clique).
@@ -1289,22 +1278,7 @@ function unmuteMedia() {
             document.getElementById('surp-fechar').onclick = fecharPlayer;
         }
 
-        // O presente segue a regra do coração que cai (dropHeart), com o segundo sorteio mais generoso: a cada 15 s há um sorteio; 50% no primeiro, 40% no segundo e 0%
-        // do terceiro em diante. A contagem começa quando o site abre (depois da charada). Só um presente por vez, nunca durante a
-        // surpresa nem o jogo Flap.
-        let rodadasSurpresa = 0;
-        let timerSurpresa = null;
-        function iniciarSorteioSurpresa() {
-            if (timerSurpresa) return;
-            timerSurpresa = setInterval(() => {
-                rodadasSurpresa++;
-                if (rodadasSurpresa > 2) { clearInterval(timerSurpresa); return; }
-                const chance = rodadasSurpresa === 1 ? 0.5 : 0.4;
-                if (window.__surpresaAtiva || document.querySelector('.rising-gift') || document.getElementById('flapSuhIframe')) return;
-                if (Math.random() <= chance) soltarSurpresa();
-            }, 15000);
-        }
-        window.__iniciarSorteioSurpresa = iniciarSorteioSurpresa;
+        window.__soltarPresente = soltarSurpresa; // o sorteio contínuo (sortearEasterEgg) fica no script principal, junto com o do coração
 
         // Sair: apaga a sessão e volta para a charada.
         document.getElementById('sair').addEventListener('click', () => {
@@ -1316,7 +1290,6 @@ function unmuteMedia() {
             gate.hidden = true;
             gate.classList.add('open');
             body.classList.remove('locked');
-            iniciarSorteioSurpresa();
             return;
         }
 
