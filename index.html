@@ -477,7 +477,7 @@
             <div class="gate-heart" aria-hidden="true">💛</div>
             <h2 class="gate-title" id="gate-title">Só entra quem sabe</h2>
             <p class="gate-sub">Uma charada do nosso amor</p>
-            <p id="gate-q"></p>
+            <p id="gate-q">Carregando a charada…</p>
             <form id="gate-form" autocomplete="off">
                 <input id="gate-input" type="text" inputmode="text" enterkeyhint="go" placeholder="sua resposta" aria-label="Resposta da charada" autocapitalize="off" autocorrect="off" spellcheck="false">
                 <button class="gate-btn" type="submit">Entrar</button>
@@ -1045,6 +1045,7 @@ function unmuteMedia() {
 
 
     <script>
+    try {
     /* ---------- charadas de entrada ----------
        As respostas são calculadas a partir das datas e dos nomes. */
     (function () {
@@ -1188,6 +1189,11 @@ function unmuteMedia() {
 
         sortear();
     })();
+    } catch (err) {
+        const q = document.getElementById('gate-q');
+        if (q) q.textContent = 'Não consegui carregar a charada (' + (err && err.message ? err.message : err) + '). Recarregue a página.';
+        if (window.console) console.error(err);
+    }
     </script>
 
 </body>
