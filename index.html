@@ -1289,7 +1289,7 @@ function unmuteMedia() {
             document.getElementById('surp-fechar').onclick = fecharPlayer;
         }
 
-        // O presente segue a MESMA regra do coração que cai (dropHeart): a cada 15 s há um sorteio; 50% no primeiro, 20% no segundo e 0%
+        // O presente segue a regra do coração que cai (dropHeart), com o segundo sorteio mais generoso: a cada 15 s há um sorteio; 50% no primeiro, 40% no segundo e 0%
         // do terceiro em diante. A contagem começa quando o site abre (depois da charada). Só um presente por vez, nunca durante a
         // surpresa nem o jogo Flap.
         let rodadasSurpresa = 0;
@@ -1299,7 +1299,7 @@ function unmuteMedia() {
             timerSurpresa = setInterval(() => {
                 rodadasSurpresa++;
                 if (rodadasSurpresa > 2) { clearInterval(timerSurpresa); return; }
-                const chance = rodadasSurpresa === 1 ? 0.5 : 0.2;
+                const chance = rodadasSurpresa === 1 ? 0.5 : 0.4;
                 if (window.__surpresaAtiva || document.querySelector('.rising-gift') || document.getElementById('flapSuhIframe')) return;
                 if (Math.random() <= chance) soltarSurpresa();
             }, 15000);
