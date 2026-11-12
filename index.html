@@ -1249,12 +1249,12 @@ function unmuteMedia() {
             store.set('suh-ok', '1');
             if (typeof resetHideTimer === 'function') resetHideTimer();
             setTimeout(() => { gate.hidden = true; }, 700);
-            // Ao entrar, 1 chance em 10 de subir o presente da surpresa (?surpresa=1 na URL força, para testar).
-            if (Math.random() < SURPRESA_CHANCE || /[?&]surpresa=1\b/.test(location.search)) setTimeout(soltarSurpresa, 2200);
+            // ?surpresa=1 na URL solta o presente já na entrada (para testar). O sorteio normal é a cada início de vídeo de fundo.
+            if (/[?&]surpresa=1\b/.test(location.search)) setTimeout(soltarSurpresa, 2200);
+            iniciarSorteioSurpresa();
         }
 
         // Vídeo surpresa: um presente sobe pela tela; se a pessoa tocar, toca o vídeo. Só baixa o vídeo no toque (preload none, src definido no clique).
-        const SURPRESA_CHANCE = 0.1;
         function soltarSurpresa() {
             const g = document.createElement('button');
             g.type = 'button';
@@ -1289,6 +1289,23 @@ function unmuteMedia() {
             document.getElementById('surp-fechar').onclick = fecharPlayer;
         }
 
+        // O presente segue a MESMA regra do coração que cai (dropHeart): a cada 15 s há um sorteio; 50% no primeiro, 20% no segundo e 0%
+        // do terceiro em diante. A contagem começa quando o site abre (depois da charada). Só um presente por vez, nunca durante a
+        // surpresa nem o jogo Flap.
+        let rodadasSurpresa = 0;
+        let timerSurpresa = null;
+        function iniciarSorteioSurpresa() {
+            if (timerSurpresa) return;
+            timerSurpresa = setInterval(() => {
+                rodadasSurpresa++;
+                if (rodadasSurpresa > 2) { clearInterval(timerSurpresa); return; }
+                const chance = rodadasSurpresa === 1 ? 0.5 : 0.2;
+                if (window.__surpresaAtiva || document.querySelector('.rising-gift') || document.getElementById('flapSuhIframe')) return;
+                if (Math.random() <= chance) soltarSurpresa();
+            }, 15000);
+        }
+        window.__iniciarSorteioSurpresa = iniciarSorteioSurpresa;
+
         // Sair: apaga a sessão e volta para a charada.
         document.getElementById('sair').addEventListener('click', () => {
             try { sessionStorage.removeItem('suh-ok'); sessionStorage.removeItem('suh-resume'); } catch (e) {}
@@ -1299,6 +1316,7 @@ function unmuteMedia() {
             gate.hidden = true;
             gate.classList.add('open');
             body.classList.remove('locked');
+            iniciarSorteioSurpresa();
             return;
         }
 
