@@ -342,6 +342,7 @@
         #surp-player[hidden] { display: none; }
         /* absoluto dentro do player fixo: ocupa a tela inteira e o object-fit: contain centraliza o vídeo, inteiro, em qualquer proporção */
         #surp-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center; background: #000; }
+        .fechar-video { position: fixed; top: max(.8rem, env(safe-area-inset-top)); right: .8rem; z-index: 1001; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .35); background: rgba(0, 0, 0, .45); color: #fff; font-size: 1.2rem; cursor: pointer; }
         #surp-fechar { position: absolute; top: max(.8rem, env(safe-area-inset-top)); right: .8rem; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .35); background: rgba(0, 0, 0, .45); color: #fff; font-size: 1.2rem; cursor: pointer; }
         #gate {
             position: fixed;
@@ -801,8 +802,20 @@ document.querySelector('.falling-heart').addEventListener('click', function() {
     // Ativa o som apenas no vídeo atual
     videoElement.muted = false;
 
-    // Após o término do vídeo, retorne o layout anterior
-    videoElement.addEventListener('ended', function() {
+    // Botão ✕ (igual ao do vídeo do presente): fecha o vídeo do coração a qualquer momento
+    const fechar = document.createElement('button');
+    fechar.type = 'button';
+    fechar.id = 'coracao-fechar';
+    fechar.className = 'fechar-video';
+    fechar.setAttribute('aria-label', 'Fechar o vídeo');
+    fechar.textContent = '✕';
+    document.body.appendChild(fechar);
+
+    // Ao terminar o vídeo (ou no ✕), volta o layout anterior. Um único tratamento, sem empilhar ouvintes a cada clique no coração.
+    function encerrarVideoCoracao() {
+        videoElement.removeEventListener('ended', encerrarVideoCoracao);
+        fechar.remove();
+
         // Retorna o layout ao estado inicial
         videoElement.style.position = 'absolute';
         videoElement.style.top = '0';
@@ -818,7 +831,9 @@ document.querySelector('.falling-heart').addEventListener('click', function() {
         heart.style.display = 'block';  // Mostra o coração novamente
         heart.style.animation = '';  // Restaura a animação do coração, caso queira retomar
         videoElement.muted = true;  // Volta o vídeo para mudo
-    });
+    }
+    videoElement.addEventListener('ended', encerrarVideoCoracao);
+    fechar.addEventListener('click', e => { e.stopPropagation(); encerrarVideoCoracao(); });
 });
 
 // Easter eggs sorteados de tempos em tempos, sem limite, enquanto o site está aberto depois do login:
