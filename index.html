@@ -1,293 +1,310 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contador de Vidas!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1a0f1f">
+    <meta name="description" content="Suh &amp; Lele — contador de dias juntos, nas duas vidas.">
+    <meta property="og:title" content="Suh &amp; Lele">
+    <meta property="og:description" content="Contador de dias juntos, nas duas vidas.">
+    <meta property="og:image" content="iconsuh.png">
+    <link rel="icon" href="iconsuh.png">
+    <title>Suh &amp; Lele</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@1,500;1,700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --ink: #fff;
+            --ink-soft: rgba(255, 255, 255, .78);
+            --gold: #ffd86b;
+            --rose: #ff6b8b;
+            --glass: rgba(24, 12, 30, .42);
+            --glass-line: rgba(255, 255, 255, .22);
+            --serif: "Playfair Display", Georgia, serif;
+            --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
         }
 
-        body, html {
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
             width: 100%;
             height: 100%;
-            overflow-x: hidden;
-            font-family: Arial, sans-serif;
+            overflow: hidden;
+            background: #1a0f1f;
+            color: var(--ink);
+            font-family: var(--sans);
+            -webkit-font-smoothing: antialiased;
         }
 
         .video-background {
             position: absolute;
-            top: 0;
-            left: 0;
+            inset: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
             z-index: -1;
-            pointer-events: auto;
-            transition: opacity 0.3s ease-in-out;
+            transition: opacity .3s ease-in-out;
+        }
+
+        /* véu escuro: deixa o texto legível sobre qualquer vídeo */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(120% 80% at 50% 0%, rgba(26, 15, 31, .55), transparent 60%),
+                linear-gradient(to bottom, rgba(26, 15, 31, .35), rgba(26, 15, 31, .15) 40%, rgba(26, 15, 31, .65));
         }
 
         .content {
-            position: absolute;
-            top: 5%;
-            left: 50%;
-            transform: translateX(-50%);
+            position: fixed;
+            inset: 0;
             z-index: 1;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
             align-items: center;
-            height: 100%;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            gap: 1.1rem;
+            padding: max(1.25rem, env(safe-area-inset-top)) 1rem 7.5rem;
             text-align: center;
-            width: 100%;
-            padding: 10px;
             overflow-y: auto;
-            transition: opacity 0.5s ease;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, .55);
+            animation: fadeUp .7s ease both;
         }
 
-        h1, h2 {
-            font-size: 3.6rem;
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        #timer {
+            font-size: .72rem;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            padding: .3rem .8rem;
+            border: 1px solid var(--glass-line);
+            border-radius: 999px;
+            background: var(--glass);
+            text-shadow: none;
+        }
+        #timer::before { content: "menu some em "; }
+        #timer::after  { content: "s"; }
+
+        .names {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 700;
+            font-size: clamp(2.6rem, 11vw, 4.6rem);
+            line-height: 1.05;
+            margin-top: .4rem;
+        }
+        .names span { color: var(--rose); padding: 0 .1em; }
+
+        #days-together-second {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: 500;
+            line-height: 1;
+            color: var(--gold);
+        }
+        #days-together-second .big {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 700;
+            font-size: clamp(4.2rem, 22vw, 7.5rem);
+        }
+        #days-together-second .unit {
+            font-size: .85rem;
+            letter-spacing: .28em;
+            text-transform: uppercase;
+            color: var(--ink);
+            margin-top: .9rem;
+        }
+
+        #current-date {
+            font-size: .95rem;
+            color: var(--ink-soft);
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .9rem;
+            width: min(100%, 34rem);
+            margin-top: .3rem;
         }
 
         .counter {
-            font-size: 1.1rem;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 6px 12px;
-            border-radius: 10px;
-            display: inline-block;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            width: auto;
-            margin-bottom: 20px;
+            background: var(--glass);
+            border: 1px solid var(--glass-line);
+            border-radius: 20px;
+            padding: 1.1rem .9rem 1rem;
+            backdrop-filter: blur(14px) saturate(140%);
+            -webkit-backdrop-filter: blur(14px) saturate(140%);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
+            text-shadow: none;
         }
-
-        .counter p {
-            margin: 0;
-            font-size: 0.9rem;
+        .counter h2 {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 500;
+            font-size: 1.25rem;
+            color: var(--ink);
+        }
+        .counter .date {
+            font-size: .72rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin: .25rem 0 .7rem;
+        }
+        .counter .days {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 700;
+            font-size: 2.3rem;
+            line-height: 1;
+            color: var(--gold);
+        }
+        .counter .detail {
+            margin-top: .55rem;
+            font-size: .78rem;
+            color: var(--ink-soft);
+            font-variant-numeric: tabular-nums;
         }
 
         .music-player {
             position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            right: 0;
+            bottom: max(1.25rem, env(safe-area-inset-bottom));
             z-index: 2;
             display: flex;
-            flex-direction: column;
             justify-content: center;
-            align-items: center;
-            width: 100%;
-            padding: 10px 0;
-        }
-
-        #current-date {
-            font-size: 1.8rem;
-            padding-bottom: 10px;
-        }
-
-        #first-life-date, #second-life-date {
-            font-size: 0.8rem;
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-
-        #timer {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            background: transparent;
-            color: white;
-            padding: 0;
-        }
-
-        @media (max-width: 600px) {
-            .content {
-                top: 5%;
-                padding: 0 10px;
-            }
-
-            h1 {
-                font-size: 2.4rem;
-            }
-
-            h2 {
-                font-size: 2.4rem;
-            }
-
-            .counter {
-                max-width: 90%;
-                font-size: 1rem;
-            }
-
-            .music-player {
-                margin-top: 10px;
-                max-width: 85%;
-            }
-        }
-
-        @media (max-width: 375px) {
-            h1, h2 {
-                font-size: 2rem;
-            }
-
-            .counter {
-                font-size: 0.9rem;
-            }
+            padding: 0 1rem;
         }
 
         .play-button {
-            background-color: rgba(255, 255, 255, 0.8);
-            color: black;
-            border: none;
-            padding: 15px 0;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            width: min(100%, 20rem);
+            padding: .7rem 1.1rem .7rem .8rem;
+            border: 1px solid var(--glass-line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .9);
+            color: #1a0f1f;
+            font-family: var(--sans);
+            text-align: left;
             cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            margin-bottom: 10px;
-            width: 250px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
+            transition: transform .2s ease, background-color .2s ease;
         }
+        .play-button:hover { transform: translateY(-2px); background: #fff; }
+        .play-button:active { transform: scale(.98); }
+        .play-button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 
-        .play-button:hover {
-            background-color: rgba(255, 255, 255, 0.9);
+        .play-button .icon {
+            flex: none;
+            display: grid;
+            place-items: center;
+            width: 2.6rem;
+            height: 2.6rem;
+            border-radius: 50%;
+            background: var(--rose);
+            color: #fff;
+            font-size: 1rem;
         }
+        .play-button .icon::before { content: "▶"; margin-left: 2px; }
+        .play-button.playing .icon::before { content: "❚❚"; margin-left: 0; font-size: .8rem; letter-spacing: -2px; }
 
-        .playing {
-            background-color: #f44336;
-            color: white;
-        }
-
-        .button-label {
-            font-size: 14px;
-            font-weight: bold;
-            color: black;
-            margin-bottom: 5px;
-        }
-
-        .music-name {
-            font-size: 12px;
-            color: black;
-            margin-top: 5px;
-            font-weight: bold;
-        }
+        .button-label { font-size: .95rem; font-weight: 600; color: #1a0f1f; }
+        .music-name { font-size: .75rem; color: rgba(26, 15, 31, .65); margin-top: 2px; }
 
         .tap-message {
             display: none;
-            font-size: 1.2rem;
-            color: white;
             position: absolute;
-            top: -50px;
+            bottom: calc(100% + .6rem);
             left: 50%;
             transform: translateX(-50%);
-            z-index: 10;
             white-space: nowrap;
-            text-align: center;
+            font-size: .85rem;
+            color: var(--ink);
+            padding: .45rem .9rem;
+            border-radius: 999px;
+            background: var(--glass);
+            border: 1px solid var(--glass-line);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: pulse 2s ease-in-out infinite;
         }
+        .tap-message.show { display: block; }
 
-        .tap-message.show {
-            display: block;
-        }
+        @keyframes pulse { 50% { opacity: .55; } }
 
-        .hidden-content {
+        /* coração que cai */
+        .falling-heart {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4rem;
+            z-index: 9999;
             display: none;
+            cursor: pointer;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .5));
+        }
+        @keyframes fall { 0% { top: -100px; } 100% { top: 100%; } }
+        @keyframes zigzag {
+            0%, 100% { transform: translateX(-50%) rotate(0); }
+            20% { transform: translateX(calc(-50% - 90px)) rotate(-12deg); }
+            40% { transform: translateX(calc(-50% + 70px)) rotate(10deg); }
+            60% { transform: translateX(calc(-50% - 60px)) rotate(-8deg); }
+            80% { transform: translateX(calc(-50% + 90px)) rotate(12deg); }
         }
 
-        .counter {
-        margin-bottom: 20px; /* Reduz o espaço entre as caixas */
-    }
+        /* ícone do Flap Suh */
+        #iconImage {
+            position: fixed;
+            bottom: 50%;
+            right: 5%;
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10000;
+            transform: translateY(50%);
+            animation: slideInOut 5s ease-in-out forwards;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .5));
+        }
+        @keyframes slideInOut {
+            0%   { opacity: 0; transform: translateX(100%); }
+            30%  { opacity: 1; transform: translateX(0); }
+            70%  { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(100%); }
+        }
 
-    .music-player {
-        position: fixed;
-        bottom: 20px; /* Mantém o botão na parte inferior */
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 2;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        max-width: 400px;
-        padding: 10px 0;
-        pointer-events: auto; /* Permite interação */
-    }
+        @media (max-width: 420px) {
+            .cards { gap: .6rem; }
+            .counter { padding: .9rem .6rem; border-radius: 16px; }
+            .counter .days { font-size: 1.9rem; }
+            .counter .detail { font-size: .7rem; }
+        }
 
-    .falling-heart {
-    position: absolute;
-    top: -100px; 
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 4rem;
-    color: red;
-    z-index: 9999;
-    display: none; /* Inicialmente escondido */
-    /* Remova a animação daqui, não a defina no início */
-}
-
-
-
-/* Animação de queda */
-@keyframes fall {
-    0% {
-        top: -100px;
-    }
-    100% {
-        top: 100%;
-    }
-}
-
-/* Animação Flap Suh */
-#iconImage {
-    position: absolute;
-    bottom: 50%;  /* A posição inicial pode ser alterada por JS para ser aleatória */
-    transform: translateY(50%);  /* Mantém a imagem na posição vertical correta */
-    opacity: 0;  /* Começa invisível */
-    animation: slideInOut 5s ease-in-out forwards;  /* Animação Flap Suh */
-    width: 80px;  /* Tamanho da imagem */
-    height: 80px; /* Tamanho da imagem */
-    right: 5%;  /* Posiciona mais para o canto direito */
-    z-index: 10000;  /* Garante que a imagem fique sobre todos os outros elementos */
-
-}
-
-/* Animação da imagem */
-@keyframes slideInOut {
-    0% {
-        opacity: 0;
-        transform: translateX(100%);  /* Começa fora da tela, à direita */
-    }
-    30% {
-        opacity: 1;
-        transform: translateX(0);  /* A imagem entra no centro da tela */
-    }
-    70% {
-        opacity: 1;
-        transform: translateX(0);  /* Mantém a posição no centro */
-    }
-    100% {
-        opacity: 0;
-        transform: translateX(100%);  /* Volta para fora da tela à direita */
-    }
-}
-
-
-
-
-
-
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+        }
     </style>
 </head>
 <body>
 
     <img id="iconImage" src="iconsuh.png" alt="Imagem do Suh" onclick="openFlapSuh()" />
-
 
     <video class="video-background" id="video-bg" autoplay muted playsinline preload="auto">
         <source id="video-source" src="suh1.mp4" type="video/mp4">
@@ -299,37 +316,42 @@
         Seu navegador não suporta a tag de áudio.
     </audio>
 
-    <!-- O coração em queda -->
     <div class="falling-heart">❤️</div>
 
-    <div class="content" id="content">
+    <main class="content" id="content">
         <div id="timer">10</div>
-        <h2>Suh & Lele</h2>
 
-        <div class="top-section">
-            <h1 style="color: yellow;" id="days-together-second">Dias Juntos</h1>
-        </div>
+        <h2 class="names">Suh <span>&amp;</span> Lele</h2>
+
+        <h1 id="days-together-second"><span class="big">0</span><span class="unit">dias juntos</span></h1>
 
         <p id="current-date"></p>
 
-        <div class="counter" id="first-life">
-            <h2>Primeira Vida!</h2>
-            <p class="date" id="first-life-date">25/04/2023</p>
-            <p id="first-days">00 Dias</p>
-        </div>
+        <div class="cards">
+            <section class="counter" id="first-life">
+                <h2>Primeira Vida</h2>
+                <p class="date" id="first-life-date">25/04/2023</p>
+                <p class="days" id="first-days">0</p>
+                <p class="detail" id="first-detail"></p>
+            </section>
 
-        <div class="counter" id="second-life">
-            <h2>Na Outra Vida!</h2>
-            <p class="date" id="second-life-date">16/12/2024</p>
-            <p id="second-days">00 Dias</p>
+            <section class="counter" id="second-life">
+                <h2>Na Outra Vida</h2>
+                <p class="date" id="second-life-date">16/12/2024</p>
+                <p class="days" id="second-days">0</p>
+                <p class="detail" id="second-detail"></p>
+            </section>
         </div>
-    </div>
+    </main>
 
     <div class="music-player" id="music-player">
         <div class="tap-message" id="tapMessage">Toque na tela para o menu voltar!</div>
-        <button id="playButton" class="play-button">
-            <div class="button-label" id="buttonLabel">Tocar Música</div>
-            <div class="music-name" id="musicName">Armandinho - Outra Vida</div>
+        <button id="playButton" class="play-button" type="button">
+            <span class="icon" aria-hidden="true"></span>
+            <span>
+                <div class="button-label" id="buttonLabel">Tocar Música</div>
+                <div class="music-name" id="musicName">Armandinho - Outra Vida</div>
+            </span>
         </button>
     </div>
 
@@ -404,20 +426,30 @@
         }
 
         function updateCounter() {
-            const now = new Date().getTime();
+            const now = Date.now();
+            const pad = n => String(n).padStart(2, '0');
+            const fmt = ms => {
+                const days = Math.floor(ms / 86400000);
+                const h = Math.floor(ms % 86400000 / 3600000);
+                const m = Math.floor(ms % 3600000 / 60000);
+                const sec = Math.floor(ms % 60000 / 1000);
+                return { days, text: `${pad(h)}h ${pad(m)}min ${pad(sec)}s` };
+            };
 
-            const firstLifeTime = now - startDateFirstLife;
-            const firstDays = Math.floor(firstLifeTime / (1000 * 60 * 60 * 24));
-            document.getElementById('first-days').innerText = `${firstDays} Dias`;
+            const first = fmt(now - startDateFirstLife);
+            document.getElementById('first-days').innerText = `${first.days} dias`;
+            document.getElementById('first-detail').innerText = `+ ${first.text}`;
 
-            const secondLifeTime = now - startDateSecondLife;
-            const secondDays = Math.floor(secondLifeTime / (1000 * 60 * 60 * 24));
-            document.getElementById('second-days').innerText = `${secondDays} Dias`;
+            const second = fmt(now - startDateSecondLife);
+            document.getElementById('second-days').innerText = `${second.days} dias`;
+            document.getElementById('second-detail').innerText = `+ ${second.text}`;
 
-            daysTogetherSecond.innerText = `${secondDays} Dias Juntos`;
+            daysTogetherSecond.querySelector('.big').innerText = second.days;
         }
 
         setInterval(updateDate, 1000);
+        updateCounter();
+        updateDate();
         setInterval(updateCounter, 1000);
 
         let hideTimeout;
@@ -440,7 +472,7 @@
             clearInterval(hideTimeout);
             timerCount = 10;
             timerDisplay.innerText = timerCount;
-            content.style.display = 'block';
+            content.style.display = '';
             tapMessage.classList.remove('show');
             startHideTimer();
         }
@@ -451,10 +483,12 @@
                 // Se a música estiver pausada, retome de onde parou
                 audioElement.play();
                 buttonLabel.innerText = "Pausar Música";
+                playButton.classList.add("playing");
             } else {
                 // Se a música estiver tocando, pause
                 audioElement.pause();
                 buttonLabel.innerText = "Tocar Música";
+                playButton.classList.remove("playing");
             }
         });
 
