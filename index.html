@@ -323,6 +323,21 @@
         body.locked .content,
         body.locked .music-player { visibility: hidden; }
 
+        /* Vídeo surpresa: pop-up "aceita uma surpresa?" e o player em tela cheia (preto e branco, com som) */
+        #surpresa { position: fixed; inset: 0; z-index: 19000; display: grid; place-items: center; padding: 1rem; background: rgba(10, 5, 14, .6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; visibility: hidden; transition: opacity .4s ease, visibility .4s ease; }
+        #surpresa.show { opacity: 1; visibility: visible; }
+        #surpresa[hidden] { display: none; }
+        .surp-card { width: min(22rem, 100%); padding: 1.6rem 1.4rem 1.3rem; text-align: center; color: #fff; border: 1px solid var(--glass-line); border-radius: 22px; background: var(--glass); backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%); box-shadow: 0 20px 60px rgba(0, 0, 0, .45); }
+        .surp-emoji { margin: 0 0 .4rem; font-size: 2.6rem; line-height: 1; }
+        .surp-card h2 { margin: 0 0 .35rem; font-family: 'Playfair Display', serif; font-size: 1.45rem; color: var(--gold); }
+        .surp-card p { margin: 0 0 1.1rem; opacity: .9; }
+        .surp-actions { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
+        .surp-actions button { min-height: 44px; padding: 0 1.3rem; border-radius: 999px; font: inherit; font-weight: 700; cursor: pointer; border: 1px solid var(--glass-line); color: #fff; background: transparent; }
+        .surp-actions button.primary { color: #2a1500; background: var(--gold); border-color: var(--gold); }
+        #surp-player { position: fixed; inset: 0; z-index: 21000; background: #000; display: grid; place-items: center; }
+        #surp-player[hidden] { display: none; }
+        #surp-video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+        #surp-fechar { position: absolute; top: max(.8rem, env(safe-area-inset-top)); right: .8rem; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .35); background: rgba(0, 0, 0, .45); color: #fff; font-size: 1.2rem; cursor: pointer; }
         #gate {
             position: fixed;
             inset: 0;
@@ -473,6 +488,21 @@
     </div>
 
 
+    <div id="surpresa" hidden>
+        <div class="surp-card" role="dialog" aria-modal="true" aria-labelledby="surp-t">
+            <p class="surp-emoji" aria-hidden="true">🎁</p>
+            <h2 id="surp-t">Tem uma surpresa pra você</h2>
+            <p>Quer ver agora?</p>
+            <div class="surp-actions">
+                <button type="button" class="primary" id="surp-sim">Quero!</button>
+                <button type="button" id="surp-nao">Agora não</button>
+            </div>
+        </div>
+    </div>
+    <div id="surp-player" hidden>
+        <video id="surp-video" playsinline preload="none"></video>
+        <button type="button" id="surp-fechar" aria-label="Fechar a surpresa">✕</button>
+    </div>
     <div id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
         <div class="gate-card">
             <div class="gate-heart" aria-hidden="true">💛</div>
@@ -497,8 +527,8 @@
            - vídeo com mais de 15 s NÃO precisa ser cortado: o site toca 15 s, pula para o
              próximo e, quando ele for sorteado de novo, continua de onde parou (SEG_MAX/LONG_MIN)
            - novo vídeo: incluir em videoSources e, se for para aparecer inteiro, em noCrop */
-        const videoSources = ["suh1.mp4", "suh2.mp4", "suh3.mp4", "suh5.mp4", "suh6.mp4", "suh8.mp4", "suh9.mp4", "suh10.mp4", "suh11.mp4", "suh12.mp4", "suh13.mp4", "suh14.mp4", "suh15.mp4", "suh16.mp4", "suh17.mp4", "suh18.mp4", "suh19.mp4", "suh20.mp4", "suh21.mp4", "suh22.mp4", "suh23.mp4", "suh24.mp4"];
-        const noCrop = ["suh11.mp4", "suh12.mp4", "suh13.mp4", "suh14.mp4", "suh15.mp4", "suh16.mp4", "suh17.mp4", "suh18.mp4", "suh19.mp4", "suh20.mp4", "suh21.mp4", "suh22.mp4", "suh23.mp4", "suh24.mp4"]; // verticais completos: mostrar inteiros
+        const videoSources = ["suh1.mp4", "suh2.mp4", "suh3.mp4", "suh5.mp4", "suh6.mp4", "suh8.mp4", "suh9.mp4", "suh10.mp4", "suh11.mp4", "suh12.mp4", "suh13.mp4", "suh14.mp4", "suh15.mp4", "suh16.mp4", "suh17.mp4", "suh18.mp4", "suh19.mp4", "suh21.mp4", "suh22.mp4", "suh23.mp4", "suh24.mp4"];
+        const noCrop = ["suh11.mp4", "suh12.mp4", "suh13.mp4", "suh14.mp4", "suh15.mp4", "suh16.mp4", "suh17.mp4", "suh18.mp4", "suh19.mp4", "suh21.mp4", "suh22.mp4", "suh23.mp4", "suh24.mp4"]; // verticais completos: mostrar inteiros
         let playedVideos = []; // vídeos já exibidos no ciclo atual (o primeiro é sorteado)
 
         const audioElement = document.getElementById('background-music');
@@ -594,13 +624,13 @@
         let lastT = -1, stuck = 0;
         setInterval(() => {
             const v = videoElement;
-            if (document.hidden || v.currentSrc.indexOf('lele') !== -1) return;
+            if (document.hidden || window.__surpresaAtiva || v.currentSrc.indexOf('lele') !== -1) return;
             if (v.paused) { v.play().catch(() => {}); return; }
             if (v.currentTime === lastT) stuck++; else { stuck = 0; lastT = v.currentTime; }
             if (stuck >= 8) { stuck = 0; playNextVideo(); }
         }, 1000);
         // um toque na tela retoma o fundo, caso o celular tenha pausado
-        document.addEventListener('click', () => { if (videoElement.paused) videoElement.play().catch(() => {}); });
+        document.addEventListener('click', () => { if (window.__surpresaAtiva) return; if (videoElement.paused) videoElement.play().catch(() => {}); });
 
         preloadVideos(); // Pré-carrega os vídeos
 
@@ -839,7 +869,7 @@ let clickCount = 0; // Contador de cliques na tela
 const maxClicks = 10; // Número máximo de cliques permitidos para ativar a ação
 
 document.addEventListener('click', () => {
-  if (document.body.classList.contains('locked')) return;
+  if (document.body.classList.contains('locked') || window.__surpresaAtiva) return;
   if (videoPlayed || clickCount >= maxClicks) return; // Sai se o vídeo já foi exibido ou os cliques excederam o limite
 
   clickCount++; // Incrementa o contador de cliques
@@ -1203,6 +1233,42 @@ function unmuteMedia() {
             store.set('suh-ok', '1');
             if (typeof resetHideTimer === 'function') resetHideTimer();
             setTimeout(() => { gate.hidden = true; }, 700);
+            // Ao entrar, 1 chance em 10 de aparecer o pop-up da surpresa (?surpresa=1 na URL força, para testar).
+            if (Math.random() < SURPRESA_CHANCE || /[?&]surpresa=1\b/.test(location.search)) setTimeout(oferecerSurpresa, 1400);
+        }
+
+        // Vídeo surpresa: só baixa se a pessoa aceitar (preload none, src definido no clique).
+        const SURPRESA_CHANCE = 0.1;
+        function oferecerSurpresa() {
+            const pop = document.getElementById('surpresa');
+            const player = document.getElementById('surp-player');
+            const vid = document.getElementById('surp-video');
+            const musica = document.getElementById('background-music');
+            const bg = document.getElementById('video-bg');
+            pop.hidden = false;
+            requestAnimationFrame(() => pop.classList.add('show'));
+            document.getElementById('surp-sim').focus();
+            function fecharPop() { pop.classList.remove('show'); setTimeout(() => { pop.hidden = true; }, 450); }
+            function fecharPlayer() {
+                vid.pause();
+                player.hidden = true;
+                vid.removeAttribute('src');
+                vid.load();
+                window.__surpresaAtiva = false;
+                if (bg) bg.play().catch(() => {});
+            }
+            document.getElementById('surp-nao').onclick = fecharPop;
+            document.getElementById('surp-sim').onclick = () => {
+                fecharPop();
+                window.__surpresaAtiva = true;
+                if (musica && !musica.paused) { musica.pause(); const lb = document.getElementById('buttonLabel'); if (lb) lb.innerText = 'Tocar Música'; }
+                if (bg) bg.pause();
+                vid.src = 'surpresa.mp4';
+                player.hidden = false;
+                vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); });
+            };
+            vid.onended = fecharPlayer;
+            document.getElementById('surp-fechar').onclick = fecharPlayer;
         }
 
         if (store.get('suh-ok') === '1') {
