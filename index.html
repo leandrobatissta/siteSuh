@@ -18,6 +18,7 @@
             --ink: #fff;
             --ink-soft: rgba(255, 255, 255, .78);
             --gold: #ffd86b;
+            --destaque: clamp(4.2rem, 20vw, 5.6rem); /* tamanho único dos quatro números (dias juntos + os três contadores) */
             --rose: #ff6b8b;
             --glass: rgba(24, 12, 30, .32);
             --glass-line: rgba(255, 255, 255, .22);
@@ -119,8 +120,8 @@
             font-family: var(--serif);
             font-style: italic;
             font-weight: 700;
-            font-size: clamp(4.2rem, 22vw, 7.5rem);
-            text-shadow: 0 0 26px rgba(255, 216, 107, .4), 0 2px 12px rgba(0, 0, 0, .55);
+            font-size: var(--destaque);
+            text-shadow: 0 0 22px rgba(255, 216, 107, .4), 0 2px 12px rgba(0, 0, 0, .55);
         }
         #days-together-second .unit {
             font-size: .85rem;
@@ -178,8 +179,8 @@
             font-family: var(--serif);
             font-style: italic;
             font-weight: 700;
-            font-size: clamp(3.4rem, 8vw, 5.2rem);
-            text-shadow: 0 0 20px rgba(255, 216, 107, .38), 0 2px 12px rgba(0, 0, 0, .55);
+            font-size: var(--destaque);
+            text-shadow: 0 0 22px rgba(255, 216, 107, .4), 0 2px 12px rgba(0, 0, 0, .55);
         }
         .counter .days .unit {
             margin-top: .45rem;
@@ -314,7 +315,7 @@
         @media (max-width: 420px) {
             .cards { gap: .6rem; }
             .counter { padding: .9rem .6rem; border-radius: 16px; }
-            .counter .days .big { font-size: clamp(4.2rem, 20vw, 5.4rem); line-height: 1; }
+            .counter .days .big { line-height: 1; }
             .counter { padding: .7rem .6rem; }
             .counter .detail { font-size: .7rem; }
         }
