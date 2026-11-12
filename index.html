@@ -551,6 +551,35 @@
 
         const videoElement = document.getElementById('video-bg');
         videoElement.addEventListener('ended', playNextVideo);
+        // vídeos longos tocam em trechos e continuam de onde pararam na próxima vez
+        const SEG_MAX = 15;   // segundos por trecho
+        const LONG_MIN = 20;  // só vale para vídeos mais longos que isso
+        let segStart = 0, switching = false;
+        const resume = (() => { try { return JSON.parse(sessionStorage.getItem('suh-resume') || '{}'); } catch (e) { return {}; } })();
+        const saveResume = () => { try { sessionStorage.setItem('suh-resume', JSON.stringify(resume)); } catch (e) {} };
+        const nameOf = v => v.currentSrc.split('/').pop();
+
+        videoElement.addEventListener('loadedmetadata', () => {
+            switching = false;
+            const k = nameOf(videoElement);
+            segStart = 0;
+            if (k.indexOf('lele') !== -1 || !(videoElement.duration > LONG_MIN)) return;
+            if (resume[k] > 0 && resume[k] < videoElement.duration - 2) {
+                videoElement.currentTime = resume[k];
+                segStart = resume[k];
+            }
+        });
+        videoElement.addEventListener('timeupdate', () => {
+            if (switching || videoElement.currentSrc.indexOf('lele') !== -1 || !(videoElement.duration > LONG_MIN)) return;
+            if (videoElement.currentTime - segStart >= SEG_MAX) {
+                switching = true;
+                resume[nameOf(videoElement)] = videoElement.currentTime;
+                saveResume();
+                playNextVideo();
+            }
+        });
+        videoElement.addEventListener('ended', () => { resume[nameOf(videoElement)] = 0; saveResume(); });
+
         // erro de carregamento: pula para o próximo
         videoElement.addEventListener('error', () => setTimeout(playNextVideo, 500));
 
