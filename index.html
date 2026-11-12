@@ -1088,7 +1088,8 @@ function openFlapSuh() {
 
     // Criar o iframe para abrir a página 'flapsuh.html' como sobreposição
     const iframe = document.createElement("iframe");
-    iframe.src = "flapsuh.html";  // Certifique-se de que o caminho para flapsuh.html esteja correto
+    // O GitHub Pages deixa o navegador guardar cada arquivo por 10 min; o ?v= faz o jogo abrir sempre na versão atual.
+    iframe.src = "flapsuh.html?v=" + Date.now();
     iframe.id = "flapSuhIframe";
     iframe.style.position = "fixed";  // Garantir que fique fixo sobre a tela
     iframe.style.top = "0";          // Posicionar no topo da tela
