@@ -881,6 +881,19 @@ document.addEventListener('click', () => {
   }
 });
 
+// ✕ para os vídeos que cobrem a tela (10 cliques, música aos 3:13): fecha o vídeo a qualquer momento. Some sozinho quando o vídeo termina.
+function adicionarFecharVideo(videoEl) {
+    const x = document.createElement('button');
+    x.type = 'button';
+    x.className = 'fechar-video';
+    x.style.zIndex = '10001';  // acima do vídeo (z-index 9999)
+    x.setAttribute('aria-label', 'Fechar o vídeo');
+    x.textContent = '✕';
+    x.addEventListener('click', e => { e.stopPropagation(); videoEl.pause(); videoEl.remove(); x.remove(); });
+    videoEl.addEventListener('ended', () => x.remove());
+    document.body.appendChild(x);
+}
+
 function playVideo() {
   // Pausar a música de fundo
   const audioElement = document.getElementById('background-music');
@@ -908,6 +921,7 @@ function playVideo() {
 
   // Adiciona o vídeo ao corpo do documento
   document.body.appendChild(videoElement);
+  adicionarFecharVideo(videoElement);  // ✕ para fechar o vídeo
 
   // Fechar o vídeo ao terminar
   videoElement.addEventListener('ended', () => {
@@ -961,6 +975,7 @@ function playVideoAtSpecificTime() {
 
         // Adiciona o vídeo ao corpo do documento
         document.body.appendChild(videoElement);
+        adicionarFecharVideo(videoElement);  // ✕ para fechar o vídeo
 
         // Log de diagnóstico para verificar se o vídeo está sendo adicionado
         console.log("Vídeo inserido:", videoElement);
