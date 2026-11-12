@@ -493,7 +493,7 @@
 
     <script>
         const videoSources = ["suh1.mp4", "suh2.mp4", "suh3.mp4", "suh5.mp4", "suh6.mp4", "suh7.mp4", "suh8.mp4", "suh9.mp4", "suh10.mp4", "suh11.mp4"];
-        let playedVideos = ["suh1.mp4"]; // Começa com o suh1.mp4
+        let playedVideos = []; // vídeos já exibidos no ciclo atual (o primeiro é sorteado)
 
         const audioElement = document.getElementById('background-music');
         const playButton = document.getElementById('playButton');
@@ -519,14 +519,15 @@
         }
 
         function playNextVideo() {
-    // Redefine a lista de vídeos já reproduzidos quando todos forem executados
-    if (playedVideos.length === videoSources.length) {
+    // Todos tocam uma vez, em ordem aleatória, antes de qualquer um repetir.
+    // Ao virar o ciclo, o último vídeo exibido não pode abrir o ciclo novo.
+    const last = playedVideos[playedVideos.length - 1];
+    if (playedVideos.length >= videoSources.length) {
         playedVideos = [];
     }
-
-    // Seleciona um vídeo aleatório que ainda não foi reproduzido
-    const remainingVideos = videoSources.filter(video => !playedVideos.includes(video));
-    const nextVideo = remainingVideos[Math.floor(Math.random() * remainingVideos.length)];
+    let pool = videoSources.filter(video => !playedVideos.includes(video));
+    if (pool.length > 1) pool = pool.filter(video => video !== last);
+    const nextVideo = pool[Math.floor(Math.random() * pool.length)];
 
     // Adiciona o vídeo atual à lista de reproduzidos
     playedVideos.push(nextVideo);
@@ -570,7 +571,10 @@
 
         // Começar com o suh1.mp4
         const videoElement1 = document.getElementById('video-source');
-        videoElement1.src = "suh1.mp4";
+        const firstVideo = videoSources[Math.floor(Math.random() * videoSources.length)];
+        playedVideos.push(firstVideo);
+        videoElement1.src = firstVideo;
+        videoElement.style.objectFit = firstVideo === 'suh11.mp4' ? 'contain' : '';
         videoElement.load();
         videoElement.play();
 
