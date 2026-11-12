@@ -44,7 +44,7 @@ Isso evita ficar muito tempo no mesmo vídeo e o travamento por vídeo grande. S
 
 ### 3. Registrar no `index.html`
 
-1. Copie o arquivo para a raiz do repositório com o próximo número (`suh17.mp4`...).
+1. Copie o arquivo para a raiz do repositório com o próximo número (`suh25.mp4`...).
 2. Inclua o nome na lista `videoSources`.
 3. Para o vídeo aparecer **inteiro, sem cortar** (padrão para os verticais completos), inclua também na lista `noCrop`. Fora dela, o vídeo preenche a tela e corta as bordas.
 
