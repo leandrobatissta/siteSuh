@@ -31,6 +31,8 @@
     .desistir-btns button { min-height: 44px; min-width: 96px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .4); background: transparent; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
     .desistir-btns button.sim { background: #ffd86b; color: #2a1500; border-color: #ffd86b; }
     #d-choro { font-size: 1.05rem; }
+    #d-voltar { min-height: 44px; padding: 0 1.4rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .12); color: #fff; font: inherit; font-weight: 700; cursor: pointer; opacity: .55; transition: opacity .2s; }
+    #d-voltar:hover, #d-voltar:focus-visible { opacity: 1; }
     #d-choro .chora { display: block; font-size: 3.4rem; animation: chora .6s ease-in-out infinite alternate; }
     @keyframes chora { from { transform: translateY(0) rotate(-6deg); } to { transform: translateY(6px) rotate(6deg); } }
     #message, #instructions {
@@ -113,7 +115,7 @@
                 <p id="desistir-q">Você quer mesmo desistir do nosso amor? 💔</p>
                 <div class="desistir-btns"><button type="button" id="d-sim">Sim</button><button type="button" class="sim" id="d-nao">Não</button></div>
             </div>
-            <div id="d-choro" hidden><span class="chora" aria-hidden="true">😭</span><p>Então tá… eu vou ficar aqui chorando…</p></div>
+            <div id="d-choro" hidden><span class="chora" aria-hidden="true">😭</span><p>Então tá… eu vou ficar aqui chorando…</p><button type="button" id="d-voltar">Voltar ao jogo</button></div>
         </div>
     </div>
     <canvas id="gameCanvas"></canvas>
@@ -395,6 +397,12 @@
             desistirBox.classList.add("show");
         });
         document.getElementById("d-nao").addEventListener("click", function() {
+            desistirBox.classList.remove("show");
+            handleContinue();
+        });
+        // Na tela do choro há um "Voltar ao jogo" (apagado, fica nítido ao tocar): cancela a saída e volta ao jogo.
+        document.getElementById("d-voltar").addEventListener("click", function() {
+            clearTimeout(choroTimer);
             desistirBox.classList.remove("show");
             handleContinue();
         });
