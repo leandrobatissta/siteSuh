@@ -492,7 +492,8 @@
     </div>
 
     <script>
-        const videoSources = ["suh1.mp4", "suh2.mp4", "suh3.mp4", "suh5.mp4", "suh6.mp4", "suh7.mp4", "suh8.mp4", "suh9.mp4", "suh10.mp4", "suh11.mp4"];
+        const videoSources = ["suh1.mp4", "suh2.mp4", "suh3.mp4", "suh5.mp4", "suh6.mp4", "suh7.mp4", "suh8.mp4", "suh9.mp4", "suh10.mp4", "suh11.mp4", "suh12.mp4", "suh13.mp4", "suh14.mp4", "suh15.mp4"];
+        const noCrop = ["suh11.mp4", "suh12.mp4", "suh13.mp4", "suh14.mp4", "suh15.mp4"]; // verticais completos: mostrar inteiros
         let playedVideos = []; // vídeos já exibidos no ciclo atual (o primeiro é sorteado)
 
         const audioElement = document.getElementById('background-music');
@@ -536,8 +537,8 @@
     const videoElement = document.getElementById('video-source');
     videoElement.src = nextVideo;
 
-    // suh11 é um vídeo vertical completo: mostra inteiro, sem cortar
-    document.getElementById('video-bg').style.objectFit = nextVideo === 'suh11.mp4' ? 'contain' : '';
+    // vídeos da lista noCrop aparecem inteiros, sem cortar
+    document.getElementById('video-bg').style.objectFit = noCrop.includes(nextVideo) ? 'contain' : '';
 
     const videoBg = document.getElementById('video-bg');
     videoBg.style.opacity = 0; // Transição suave
@@ -603,7 +604,7 @@
         const firstVideo = videoSources[Math.floor(Math.random() * videoSources.length)];
         playedVideos.push(firstVideo);
         videoElement1.src = firstVideo;
-        videoElement.style.objectFit = firstVideo === 'suh11.mp4' ? 'contain' : '';
+        videoElement.style.objectFit = noCrop.includes(firstVideo) ? 'contain' : '';
         videoElement.load();
         videoElement.play();
 
